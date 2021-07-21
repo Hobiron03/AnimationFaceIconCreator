@@ -32,7 +32,7 @@ export const Review = (props: ReviewProps) => {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    width: 210,
+    width: 240,
     margin: "20px 10px",
     border: "1px solid #000",
     boxShadow: theme.shadows[3],
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: "center",
     borderBottom: "1px solid #505050",
+    padding: 5,
     fontSize: 10,
   },
   content: {

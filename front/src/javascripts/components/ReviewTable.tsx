@@ -115,7 +115,7 @@ const ReviewTable = () => {
               <div key={index}>
                 <Review
                   title={review.title}
-                  faceIconURL={review.dynamicFaceIcon}
+                  faceIconURL={review.canvasImage}
                   onClick={() => OpenReviewModal(review)}
                 ></Review>
               </div>
@@ -130,12 +130,12 @@ const ReviewTable = () => {
               review.dataY
             );
             console.log(costX + costY);
-            if (costX + costY <= 90000) {
+            if (costX + costY <= 300000) {
               return (
                 <div key={index}>
                   <Review
                     title={review.title}
-                    faceIconURL={review.dynamicFaceIcon}
+                    faceIconURL={review.canvasImage}
                     onClick={() => OpenReviewModal(review)}
                   ></Review>
                 </div>
@@ -151,7 +151,7 @@ const ReviewTable = () => {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    width: 800,
+    width: 900,
     margin: "30px auto",
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
@@ -163,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     flexWrap: "wrap",
-    width: 1300,
+    width: 1400,
   },
 }));
 

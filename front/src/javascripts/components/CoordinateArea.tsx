@@ -449,7 +449,7 @@ const CoordinateArea = () => {
   const DrawFace = (x: number, y: number): void => {
     ResetFacialParts();
     RenderMouth(x);
-    // RenderEye(x);
+    RenderEye(x);
     RenderEyebrows(y);
   };
 
@@ -466,10 +466,10 @@ const CoordinateArea = () => {
     }
 
     //顔アイコンの初期の色を設定
-    // emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(255, 194, 0);
+    emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(255, 194, 0);
     // emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(30, 30, 30);
 
-    emotionFaceDiv.style.backgroundImage = "url(../../images/gankotyan.png)";
+    // emotionFaceDiv.style.backgroundImage = "url(../../images/gankotyan.png)";
 
     corrdinate.width = coordinateDiv.clientWidth;
     corrdinate.height = coordinateDiv.clientHeight;
@@ -500,16 +500,16 @@ const CoordinateArea = () => {
     //左眉
     leftEyebrow.lineWidth = 3 * faceSizeRatio;
     leftEyebrow.startPosX = centerPosX - 45 * faceSizeRatio;
-    leftEyebrow.startPosY = centerPosY - 20 * faceSizeRatio;
+    leftEyebrow.startPosY = centerPosY - 33 * faceSizeRatio;
     leftEyebrow.endPosX = centerPosX - 20 * faceSizeRatio;
-    leftEyebrow.endPosY = centerPosY - 20 * faceSizeRatio;
+    leftEyebrow.endPosY = centerPosY - 33 * faceSizeRatio;
     leftEyebrow.maxEndHeight = (faceHeight / 13) * faceSizeRatio;
     //右眉
     rightEyebrow.lineWidth = 3 * faceSizeRatio;
     rightEyebrow.startPosX = centerPosX + 45 * faceSizeRatio;
-    rightEyebrow.startPosY = centerPosY - 20 * faceSizeRatio;
+    rightEyebrow.startPosY = centerPosY - 33 * faceSizeRatio;
     rightEyebrow.endPosX = centerPosX + 20 * faceSizeRatio;
-    rightEyebrow.endPosY = centerPosY - 20 * faceSizeRatio;
+    rightEyebrow.endPosY = centerPosY - 33 * faceSizeRatio;
     rightEyebrow.maxEndHeight = faceHeight / (13 * faceSizeRatio);
 
     //目の設定
