@@ -22,6 +22,8 @@ import CalculateColor from "../CalculateColor";
 import FormatImageData from "../FormatImageData";
 //----------------------------------------
 
+import Button from "@material-ui/core/Button";
+
 enum Color {
   BLACK = "black",
   BLUE = "#629BEAa",
@@ -72,10 +74,15 @@ let corrdinate: coordinate = {
 
 let dataX: number[] = [];
 let dataY: number[] = [];
+const herokuURL = "https://emoemoface.herokuapp.com/returnGIF";
+const GCS_URL = "https://storage.googleapis.com/faceicons/";
 
 const CoordinateArea = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
+
+  const [resultImage, setReusltImage] = useState("");
+  const [base64Images, setBase64Images] = useState([]);
 
   // Coordinate
   const [cctx, setContext] = useState(null);
@@ -205,6 +212,7 @@ const CoordinateArea = () => {
 
   let startPosX: number;
   let startPosY: number;
+  let images = [];
   const HandleMouseDown = (
     e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
   ) => {
@@ -271,6 +279,7 @@ const CoordinateArea = () => {
             // }).then((canvas) => {
             //   base64Images.push(canvas.toDataURL());
             // });
+            images.push(facialPartsCanvas.toDataURL());
             dataX.push(mousePosX);
             dataY.push(mousePosY);
             //座標によって顔アイコンの顔を変化させる
@@ -323,6 +332,7 @@ const CoordinateArea = () => {
       type: FILTER_BY_DTW,
       timeSeriesData: { timeSeriesDataX: dataX, timeSeriesDataY: dataY },
     });
+    setBase64Images(images);
     dataX = [];
     dataY = [];
   };
@@ -521,12 +531,31 @@ const CoordinateArea = () => {
     DrawFace(corrdinate.height / 2, corrdinate.height / 2);
   };
 
+  const handleOnOkButtonClick = async () => {
+    //大体30fps
+    await PostImageData(FormatImageData(base64Images), herokuURL)
+      .then((image_name) => {
+        const name = `${GCS_URL}${image_name}`;
+
+        // setGIF(image_name);
+        // setImageToresultImage(name);
+        setReusltImage(name);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // SplitImage();
+
+    //reset
+    setBase64Images([]);
+  };
+
   return (
-    <div className={classes.coordinate}>
+    <div>
       <div id="review-area__main__make-face-field__Top__emotion-face">
         <canvas id="facial-parts" width="150" height="150"></canvas>
       </div>
-
       <canvas
         width="400"
         height="400"
@@ -535,16 +564,27 @@ const CoordinateArea = () => {
         onMouseUp={(e) => HandleMouseUp(e)}
         onMouseMove={(e) => HandleMouseMove(e)}
       ></canvas>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOnOkButtonClick}
+      >
+        Primary
+      </Button>
+
+      <div>
+        <img src={resultImage} alt="" />
+      </div>
     </div>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
-  coordinate: {
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-  },
+  // coordinate: {
+  //   display: "flex",
+  //   justifyContent: "space-evenly",
+  //   alignItems: "center",
+  // },
 }));
 
 export default CoordinateArea;
