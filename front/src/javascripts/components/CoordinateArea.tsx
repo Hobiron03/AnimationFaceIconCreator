@@ -22,7 +22,10 @@ import CalculateColor from "../CalculateColor";
 import FormatImageData from "../FormatImageData";
 //----------------------------------------
 
+import html2canvas from "html2canvas";
 import Button from "@material-ui/core/Button";
+
+import FaceReviewModal from "./FaceReviewModal";
 
 enum Color {
   BLACK = "black",
@@ -92,10 +95,16 @@ const CoordinateArea = () => {
   const [fpctx, setFaceIconContext] = useState(null);
   const [facialPartsCanvas, setFacialPartsCanvas] = useState(null);
 
+  // 顔アイコンのbackground
+  const [fbctx, setFaceIconBackgroundContext] = useState(null);
+  const [facialBackgroundCanvas, setFacialBackgroundCanvas] = useState(null);
+
   const [emotionFaceDiv, setEmotionFaceDiv] = useState(null);
   const [coordinateDiv, setCoordinateDiv] = useState(null);
   // 画像読み込み完了トリガー
   const [loaded, setLoaded] = useState(false);
+
+  const [isFaceIconModalOpen, setIsFaceIconModalOpen] = useState(false);
 
   useEffect(() => {
     const coordinateCanvas: HTMLCanvasElement = document.getElementById(
@@ -116,6 +125,16 @@ const CoordinateArea = () => {
     const fpctx: CanvasRenderingContext2D | null =
       facialPartsCanvas.getContext("2d");
     setFaceIconContext(fpctx);
+
+    // face background
+    const facialBackgroundCanvas: HTMLCanvasElement = document.getElementById(
+      "facial-background"
+    ) as HTMLCanvasElement;
+    setFacialBackgroundCanvas(facialBackgroundCanvas);
+
+    const fbctx: CanvasRenderingContext2D | null =
+      facialPartsCanvas.getContext("2d");
+    setFaceIconBackgroundContext(fbctx);
 
     const emotionFaceDiv: HTMLElement | null = document.getElementById(
       "review-area__main__make-face-field__Top__emotion-face"
@@ -152,9 +171,29 @@ const CoordinateArea = () => {
     if (loaded) {
       // それに続く処理
       DrawCoordinateImage();
+
       InitFacialParts();
+      renderFaceiconBackground();
     }
   }, [loaded]);
+
+  const renderFaceiconBackground = () => {
+    let background: HTMLImageElement = new Image();
+    const imageURL: string = "../../images/BaseFace.png";
+    background.src = imageURL;
+    //画像をCanvasのサイズに合わせて等倍して画像をcanvasに貼り付ける.
+    background.onload = () => {
+      if (fbctx) {
+        fbctx.drawImage(
+          background,
+          0,
+          0,
+          facialBackgroundCanvas.width,
+          (background.height * facialBackgroundCanvas.width) / background.width
+        );
+      }
+    };
+  };
 
   //x座標とy座標から対応する感情を返却する（喜怒哀楽）
   const ReturnEmotion = (x: number, y: number): string => {
@@ -273,12 +312,7 @@ const CoordinateArea = () => {
 
           if (fpctx) {
             DrawFace(mousePosX, mousePosY);
-            //画像の64進数のデータにする
-            // html2canvas(emotionFaceDiv, {
-            //   scale: faceScale,
-            // }).then((canvas) => {
-            //   base64Images.push(canvas.toDataURL());
-            // });
+
             images.push(facialPartsCanvas.toDataURL());
             dataX.push(mousePosX);
             dataY.push(mousePosY);
@@ -532,27 +566,31 @@ const CoordinateArea = () => {
   };
 
   const handleOnOkButtonClick = async () => {
-    //大体30fps
-    await PostImageData(FormatImageData(base64Images), herokuURL)
-      .then((image_name) => {
-        const name = `${GCS_URL}${image_name}`;
+    // //大体30fps
+    // await PostImageData(FormatImageData(base64Images), herokuURL)
+    //   .then((image_name) => {
+    //     const name = `${GCS_URL}${image_name}`;
 
-        // setGIF(image_name);
-        // setImageToresultImage(name);
-        setReusltImage(name);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    //     // setGIF(image_name);
+    //     // setImageToresultImage(name);
+    //     setReusltImage(name);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+    // setBase64Images([]);
 
-    // SplitImage();
-
-    //reset
-    setBase64Images([]);
+    setIsFaceIconModalOpen(true);
   };
 
   return (
     <div>
+      <FaceReviewModal
+        isFaceIconReviewModalOpen={isFaceIconModalOpen}
+        setIsFaceIconModalOpen={setIsFaceIconModalOpen}
+        base64Images={base64Images}
+      ></FaceReviewModal>
+
       <div id="review-area__main__make-face-field__Top__emotion-face">
         <canvas id="facial-parts" width="150" height="150"></canvas>
       </div>
@@ -569,7 +607,7 @@ const CoordinateArea = () => {
         color="primary"
         onClick={handleOnOkButtonClick}
       >
-        Primary
+        OK
       </Button>
 
       <div>
