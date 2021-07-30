@@ -313,7 +313,12 @@ const CoordinateArea = () => {
           if (fpctx) {
             DrawFace(mousePosX, mousePosY);
 
-            images.push(facialPartsCanvas.toDataURL());
+            // images.push(facialPartsCanvas.toDataURL());
+            html2canvas(emotionFaceDiv, {
+              scale: faceScale,
+            }).then((canvas) => {
+              images.push(canvas.toDataURL());
+            });
             dataX.push(mousePosX);
             dataY.push(mousePosY);
             //座標によって顔アイコンの顔を変化させる
