@@ -87,7 +87,7 @@ let dataY: number[] = [];
 const herokuURL = "https://emoemoface.herokuapp.com/returnGIF";
 const GCS_URL = "https://storage.googleapis.com/faceicons/";
 
-const CoordinateArea = () => {
+const NormalCoordinateArea = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
 
@@ -681,52 +681,52 @@ const CoordinateArea = () => {
       });
     // setBase64Images([]);
 
-    setIsFaceIconModalOpen(true);
+    // setIsFaceIconModalOpen(true);
   };
 
   return (
     <div className={classes.coordinateArea}>
-      <FaceReviewModal
-        isFaceIconReviewModalOpen={isFaceIconModalOpen}
-        setIsFaceIconModalOpen={setIsFaceIconModalOpen}
-        base64Images={base64Images}
-        animationFaceIcon={resultImage}
-      ></FaceReviewModal>
-
       <div></div>
 
-      <div className={classes.createFaceIconArea}>
-        <div className={classes.faceIcon} id="faceIconID">
-          <canvas id="facial-parts" width="150" height="150"></canvas>
+      <div>
+        <div className={classes.createFaceIconArea}>
+          <div className={classes.faceIcon} id="faceIconID">
+            <canvas id="facial-parts" width="150" height="150"></canvas>
+          </div>
+          <canvas
+            width="400"
+            height="400"
+            id="coordinate"
+            onMouseDown={(e) => HandleMouseDown(e)}
+            onMouseUp={(e) => HandleMouseUp(e)}
+            onMouseMove={(e) => HandleMouseMove(e)}
+          ></canvas>
         </div>
-        <canvas
-          width="400"
-          height="400"
-          id="coordinate"
-          onMouseDown={(e) => HandleMouseDown(e)}
-          onMouseUp={(e) => HandleMouseUp(e)}
-          onMouseMove={(e) => HandleMouseMove(e)}
-        ></canvas>
+
+        <div className={classes.wrapper}>
+          <Button
+            fullWidth={true}
+            variant="contained"
+            color="primary"
+            disabled={isCreatingFaceIcon}
+            onClick={handleOnOkButtonClick}
+          >
+            これでOK
+          </Button>
+          {isCreatingFaceIcon && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
+        </div>
       </div>
 
-      <div className={classes.wrapper}>
-        <Button
-          fullWidth={true}
-          variant="contained"
-          color="primary"
-          disabled={isCreatingFaceIcon}
-          onClick={handleOnOkButtonClick}
-        >
-          これでOK
-        </Button>
-        {isCreatingFaceIcon && (
-          <CircularProgress size={24} className={classes.buttonProgress} />
-        )}
+      <div className={classes.result}>
+        <div>
+          <h3>出力結果</h3>
+        </div>
+        <div>
+          <img src={resultImage} alt="" />
+        </div>
       </div>
-
-      {/* <div>
-        <img src={resultImage} alt="" />
-      </div> */}
     </div>
   );
 };
@@ -734,7 +734,8 @@ const CoordinateArea = () => {
 const useStyles = makeStyles((theme) => ({
   coordinateArea: {
     margin: "0 auto",
-    width: 420,
+    width: 1000,
+    display: "flex",
   },
   wrapper: {
     margin: theme.spacing(1),
@@ -757,6 +758,10 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   },
+  result: {
+    marginLeft: 100,
+    textAlign: "center",
+  },
 }));
 
-export default CoordinateArea;
+export default NormalCoordinateArea;

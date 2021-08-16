@@ -9,18 +9,29 @@ type FaceReviewModalType = {
   isFaceIconReviewModalOpen: boolean;
   setIsFaceIconModalOpen: () => void;
   base64Iimages: [];
+  animationFaceIcon: string;
+};
+
+type SendFirebaseType = {
+  animationFaceIcon: string;
+  title: string;
+  staticFaceIcon: string[];
+  reviews: string[];
 };
 
 const FaceReviewModal = ({
   isFaceIconReviewModalOpen,
   setIsFaceIconModalOpen,
   base64Images,
+  animationFaceIcon,
 }) => {
   const classes = useStyles();
+  const [title, setTitle] = useState("");
+
   const [faceIcons, setFaceIcons] = useState([]);
   const [reviews, setReviews] = useState([]);
-
   const [review, setReview] = useState("");
+
   const [reviewFaceIcon, setReviewFaceIcon] = useState(base64Images[0]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -28,40 +39,49 @@ const FaceReviewModal = ({
   const [reduceFaceIcons, setReduceFaceIcon] = useState([]);
   const [reduceNum, _] = useState(13);
 
+  const [isTitleScreen, setIsTitleScreen] = useState(true);
+
   useEffect(() => {
+    setReviewFaceIcon(base64Images[0]);
+
     //数を削減
     if (base64Images.length > reduceNum) {
+      console.log("reduce face num");
       const degree = base64Images.length / (reduceNum - 1);
 
       // setReduceFaceIcon([...reduceFaceIcons, base64Images[0]]);
       const rfaces = [];
       rfaces.push(base64Images[0]);
+
       for (let index = degree; index < base64Images.length; index += degree) {
         rfaces.push(base64Images[Math.floor(index)]);
       }
-      rfaces.push(base64Images[base64Images.length - 1]);
 
+      rfaces.push(base64Images[base64Images.length - 1]);
       setReduceFaceIcon(rfaces);
     } else {
       setReduceFaceIcon(base64Images);
     }
 
-    setReviewFaceIcon(base64Images[0]);
-
-    let initArr = new Array(base64Images.length);
-    initArr.fill("");
-    setReviews(initArr);
+    let initReviews = new Array(reduceNum);
+    let initFaceicons = new Array(reduceNum);
+    initReviews.fill("");
+    initFaceicons.fill("");
+    setReviews(initReviews);
+    setFaceIcons(initFaceicons);
   }, [isFaceIconReviewModalOpen]);
 
   const CloseReviewModal = () => {
-    console.log(reduceFaceIcons);
     setIsFaceIconModalOpen(false);
   };
 
   const handleReviewFaceIconClick = (base64Image, index) => {
-    const newFaceIcons = faceIcons;
-    newFaceIcons[selectedIndex] = reviewFaceIcon;
-    setReviewFaceIcon(newFaceIcons);
+    if (review != "") {
+      console.log("none");
+      const newFaceIcons = faceIcons;
+      newFaceIcons[selectedIndex] = reviewFaceIcon;
+      setFaceIcons(newFaceIcons);
+    }
 
     const newReview = reviews;
     newReview[selectedIndex] = review;
@@ -71,7 +91,6 @@ const FaceReviewModal = ({
     setReviewFaceIcon(base64Image);
 
     setReview(reviews[index]);
-    console.log(reviews);
   };
 
   const handleContinueReviewButton = () => {
@@ -87,23 +106,69 @@ const FaceReviewModal = ({
     setSelectedIndex(selectedIndex + 1);
   };
 
-  const handleFinishReviewButton = () => {
+  const toggleModalScreen = () => {
+    setIsTitleScreen(!isTitleScreen);
+  };
+
+  const handleFinishReviewButton = async () => {
+    if (review != "") {
+      console.log("none");
+      const newFaceIcons = faceIcons;
+      newFaceIcons[selectedIndex] = reviewFaceIcon;
+      setFaceIcons(newFaceIcons);
+    }
+
+    const newReview = reviews;
+    newReview[selectedIndex] = review;
+    setReviews(newReview);
+
     console.log(faceIcons);
+    console.log("------------------");
     console.log(reviews);
+
+    //ここでfirebaseに送信
+    const sendStaticFaceIcons: string[] = faceIcons.filter(
+      (faceIcon) => faceIcon != ""
+    );
+    const sendReviews: string[] = reviews.filter((review) => review != "");
+
+    console.log(sendStaticFaceIcons);
+    console.log("------------------");
+    console.log(sendReviews);
+    const sendData: SendFirebaseType = {
+      animationFaceIcon,
+      title,
+      staticFaceIcon: sendStaticFaceIcons,
+      reviews: sendReviews,
+    };
+
+    //firebaseにレビューデータを送信
+    const reviewsCollectionReference = firebase
+      .firestore()
+      .collection("NewFaceIconReviewData");
+
+    await reviewsCollectionReference.add(sendData);
+
+    CloseReviewModal();
   };
 
   const handleReviewContentOnChange = (e) => {
     setReview(e.target.value);
   };
 
-  const ModalBody = (
+  const handleReviewTitleOnChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const ModalBodyReview = (
     <div className={classes.paper}>
-      <h2>レビューの執筆</h2>
+      <h2>レビュー</h2>
 
       <div className={classes.reviewModalFaceIcons}>
         {reduceFaceIcons.map((reduceFaceIcon, index) => {
           return (
             <div
+              key={index}
               className={
                 selectedIndex === index
                   ? classes.reviewModalFaceIconSelected
@@ -119,7 +184,7 @@ const FaceReviewModal = ({
 
       <div className={classes.reviewFaceIconMain}>
         <img
-          src={base64Images[selectedIndex]}
+          src={reduceFaceIcons[selectedIndex]}
           alt=""
           width={150}
           height={150}
@@ -138,19 +203,45 @@ const FaceReviewModal = ({
       </div>
 
       <div className={classes.buttons}>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={handleFinishReviewButton}
-        >
-          終了
+        <Button variant="outlined" color="primary" onClick={toggleModalScreen}>
+          戻る
         </Button>
 
         <Button
           variant="outlined"
-          color="primary"
-          onClick={handleContinueReviewButton}
+          color="secondary"
+          onClick={() => handleFinishReviewButton()}
         >
+          終了
+        </Button>
+      </div>
+    </div>
+  );
+
+  const ModalBodyTitle = (
+    <div className={classes.paper}>
+      <h2>タイトル入力</h2>
+
+      <div className={classes.reviewFaceIconMain}>
+        <img src={animationFaceIcon} alt="" width={150} height={150} />
+      </div>
+
+      <div className={classes.reviewArea}>
+        <textarea
+          className={classes.reviewAreaContent}
+          onChange={(e) => handleReviewTitleOnChange(e)}
+          placeholder="レビューのタイトルを入力してください"
+          cols={4}
+          rows={2}
+        ></textarea>
+      </div>
+
+      <div className={classes.buttons}>
+        <Button variant="outlined" color="secondary" onClick={CloseReviewModal}>
+          閉じる
+        </Button>
+
+        <Button variant="outlined" color="primary" onClick={toggleModalScreen}>
           続ける
         </Button>
       </div>
@@ -164,7 +255,7 @@ const FaceReviewModal = ({
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
     >
-      {ModalBody}
+      {isTitleScreen ? ModalBodyTitle : ModalBodyReview}
     </Modal>
   );
 };

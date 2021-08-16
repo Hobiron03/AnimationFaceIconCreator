@@ -20,7 +20,7 @@ interface ReivewData {
 
 let dtw = new DTW();
 
-const ReviewTable = () => {
+const NewReviewTable = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
 
@@ -168,4 +168,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default ReviewTable;
+export default NewReviewTable;

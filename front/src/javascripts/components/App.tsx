@@ -11,6 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 
 import CoordinateArea from "./CoordinateArea";
+import NormalCoordinateArea from "./NormalCoordinateArea";
 import FreeDescriptionReview from "./FreeDescriptionReview";
 import B3Reviews from "./B3Reviews";
 import ReviewsResult from "./ReviewsResult";
@@ -49,13 +50,13 @@ const App = () => {
     return (
       <div>
         <CoordinateArea></CoordinateArea>
-        <Button
+        {/* <Button
           variant="contained"
           color="secondary"
           onClick={() => HandleFilterByFaceIconOkButtonClick()}
         >
           オッケー
-        </Button>
+        </Button> */}
       </div>
     );
   };
@@ -82,7 +83,7 @@ const App = () => {
       <div className="ReivewArea">
         <h3>{"商品やサービス"} レビュー一覧</h3>
         <div className="filterButtons">
-          <Button
+          {/* <Button
             variant="contained"
             color="secondary"
             onClick={() => HandleFilterByEmotionButtonOnClick("Angry")}
@@ -109,7 +110,7 @@ const App = () => {
             onClick={() => HandleFilterByEmotionButtonOnClick("Pleasure")}
           >
             楽しみ
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             color="inherit"
@@ -129,13 +130,17 @@ const App = () => {
     <AppContext.Provider value={{ state, dispatch }}>
       <Router>
         <Switch>
-          <Route path="/reviews">{ReivewScreen}</Route>
+          <Route path="/reviews-table">{ReivewScreen}</Route>
           <Route path="/free-review">
             <FreeDescriptionReview></FreeDescriptionReview>
           </Route>
-          <Route path="/">
+          <Route path="/review">
             {/* <ReviewsResult></ReviewsResult> */}
             <CoordinateArea></CoordinateArea>
+          </Route>
+          <Route path="/">
+            {/* <ReviewsResult></ReviewsResult> */}
+            <NormalCoordinateArea></NormalCoordinateArea>
           </Route>
         </Switch>
       </Router>
