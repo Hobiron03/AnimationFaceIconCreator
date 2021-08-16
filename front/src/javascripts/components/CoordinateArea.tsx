@@ -9,7 +9,6 @@ import {
 } from "../actions";
 
 import "../../images/BaseFace200.png";
-import "../../images/image3/BaseFaceGlasses.png";
 
 //----自分で定義した型をインポート---
 import Mouse from "../../javascripts/@types/mouse";

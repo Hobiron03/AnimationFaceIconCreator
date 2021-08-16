@@ -9,7 +9,10 @@ import {
 } from "../actions";
 
 import "../../images/BaseFace200.png";
-import "../../images/image3/BaseFaceGlasses.png";
+import "../../images/dangerman.png";
+import "../../images/glusses2.png";
+import "../../images/cheek.png";
+import "../../images/cat.png";
 
 //----自分で定義した型をインポート---
 import Mouse from "../../javascripts/@types/mouse";
@@ -82,6 +85,14 @@ let corrdinate: coordinate = {
   height: 0,
 };
 
+let style = {
+  normal: "BaseFace200.png",
+  dangerMan: "dangerman.png",
+  cat: "cat.png",
+  cheek: "cheek.png",
+  glusses: "glusses2.png",
+};
+
 let dataX: number[] = [];
 let dataY: number[] = [];
 const herokuURL = "https://emoemoface.herokuapp.com/returnGIF";
@@ -93,6 +104,8 @@ const NormalCoordinateArea = () => {
 
   const [resultImage, setReusltImage] = useState("");
   const [base64Images, setBase64Images] = useState([]);
+
+  const [faceStyle, setFaceStyle] = useState(style.normal);
 
   // Coordinate
   const [cctx, setContext] = useState(null);
@@ -187,7 +200,7 @@ const NormalCoordinateArea = () => {
 
   const renderFaceiconBackground = () => {
     let background: HTMLImageElement = new Image();
-    const imageURL: string = "../../images/BaseFace.png";
+    const imageURL: string = "../../images/BaseFace200.png";
     background.src = imageURL;
     //画像をCanvasのサイズに合わせて等倍して画像をcanvasに貼り付ける.
     background.onload = () => {
@@ -475,7 +488,7 @@ const NormalCoordinateArea = () => {
       );
 
       const baseFace = new Image();
-      baseFace.src = "../../images/BaseFace200.png";
+      baseFace.src = "../../images/" + faceStyle;
       fpctx.drawImage(baseFace, 0, 0, 150, 150);
     }
   };
@@ -684,6 +697,11 @@ const NormalCoordinateArea = () => {
     // setIsFaceIconModalOpen(true);
   };
 
+  const handleStyleChange = (style) => {
+    setFaceStyle(style);
+    InitFacialParts();
+  };
+
   return (
     <div className={classes.coordinateArea}>
       <div></div>
@@ -716,6 +734,44 @@ const NormalCoordinateArea = () => {
           {isCreatingFaceIcon && (
             <CircularProgress size={24} className={classes.buttonProgress} />
           )}
+        </div>
+
+        <div className={classes.styleChage}>
+          <img
+            className={classes.style}
+            onClick={() => handleStyleChange(style.normal)}
+            src={`../../images/${style.normal}`}
+            alt=""
+            width={60}
+          />
+          <img
+            className={classes.style}
+            onClick={() => handleStyleChange(style.dangerMan)}
+            src={`../../images/${style.dangerMan}`}
+            alt=""
+            width={60}
+          />
+          <img
+            className={classes.style}
+            onClick={() => handleStyleChange(style.cat)}
+            src={`../../images/${style.cat}`}
+            alt=""
+            width={60}
+          />
+          <img
+            className={classes.style}
+            onClick={() => handleStyleChange(style.glusses)}
+            src={`../../images/${style.glusses}`}
+            alt=""
+            width={60}
+          />
+          <img
+            className={classes.style}
+            onClick={() => handleStyleChange(style.cheek)}
+            src={`../../images/${style.cheek}`}
+            alt=""
+            width={60}
+          />
         </div>
       </div>
 
@@ -761,6 +817,17 @@ const useStyles = makeStyles((theme) => ({
   result: {
     marginLeft: 100,
     textAlign: "center",
+  },
+  styleChage: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  style: {
+    cursor: "pointer",
+    "&:hover": {
+      transition: "all 0.2s",
+      backgroundColor: "rgba(0, 0, 150, 0.1)",
+    },
   },
 }));
 
