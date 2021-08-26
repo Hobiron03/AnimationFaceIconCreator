@@ -11,6 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 
 import CoordinateArea from "./CoordinateArea";
+import FreeReviewPage from "./FreeReviewPage";
 import NormalCoordinateArea from "./NormalCoordinateArea";
 import FreeDescriptionReview from "./FreeDescriptionReview";
 import B3Reviews from "./B3Reviews";
@@ -133,6 +134,9 @@ const App = () => {
           <Route path="/reviews-table">{ReivewScreen}</Route>
           <Route path="/free-review">
             <FreeDescriptionReview></FreeDescriptionReview>
+          </Route>
+          <Route path="/review-normal">
+            <FreeReviewPage></FreeReviewPage>
           </Route>
           <Route path="/review">
             {/* <ReviewsResult></ReviewsResult> */}

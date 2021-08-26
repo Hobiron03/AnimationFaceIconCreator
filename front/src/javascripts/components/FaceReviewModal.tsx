@@ -17,6 +17,7 @@ type SendFirebaseType = {
   title: string;
   staticFaceIcon: string[];
   reviews: string[];
+  mTime: number;
 };
 
 const FaceReviewModal = ({
@@ -41,12 +42,16 @@ const FaceReviewModal = ({
 
   const [isTitleScreen, setIsTitleScreen] = useState(true);
 
+  let startTime = 0;
+  let endTime = 0;
+
   useEffect(() => {
+    startTime = performance.now();
+
     setReviewFaceIcon(base64Images[0]);
 
     //数を削減
     if (base64Images.length > reduceNum) {
-      console.log("reduce face num");
       const degree = base64Images.length / (reduceNum - 1);
 
       // setReduceFaceIcon([...reduceFaceIcons, base64Images[0]]);
@@ -111,6 +116,9 @@ const FaceReviewModal = ({
   };
 
   const handleFinishReviewButton = async () => {
+    endTime = performance.now();
+    console.log(endTime - startTime);
+
     if (review != "") {
       console.log("none");
       const newFaceIcons = faceIcons;
@@ -122,9 +130,9 @@ const FaceReviewModal = ({
     newReview[selectedIndex] = review;
     setReviews(newReview);
 
-    console.log(faceIcons);
-    console.log("------------------");
-    console.log(reviews);
+    // console.log(faceIcons);
+    // console.log("------------------");
+    // console.log(reviews);
 
     //ここでfirebaseに送信
     const sendStaticFaceIcons: string[] = faceIcons.filter(
@@ -132,14 +140,15 @@ const FaceReviewModal = ({
     );
     const sendReviews: string[] = reviews.filter((review) => review != "");
 
-    console.log(sendStaticFaceIcons);
-    console.log("------------------");
-    console.log(sendReviews);
+    // console.log(sendStaticFaceIcons);
+    // console.log("------------------");
+    // console.log(sendReviews);
     const sendData: SendFirebaseType = {
       animationFaceIcon,
       title,
       staticFaceIcon: sendStaticFaceIcons,
       reviews: sendReviews,
+      mTime: endTime - startTime,
     };
 
     //firebaseにレビューデータを送信
