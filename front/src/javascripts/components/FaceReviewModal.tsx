@@ -171,7 +171,7 @@ const FaceReviewModal = ({
 
   const ModalBodyReview = (
     <div className={classes.paper}>
-      <h2>レビュー</h2>
+      <h3>レビューを記述</h3>
 
       <div className={classes.reviewModalFaceIcons}>
         {reduceFaceIcons.map((reduceFaceIcon, index) => {
@@ -229,7 +229,7 @@ const FaceReviewModal = ({
 
   const ModalBodyTitle = (
     <div className={classes.paper}>
-      <h2>タイトル入力</h2>
+      <h3>タイトル入力</h3>
 
       <div className={classes.reviewFaceIconMain}>
         <img src={animationFaceIcon} alt="" width={150} height={150} />
@@ -237,7 +237,7 @@ const FaceReviewModal = ({
 
       <div className={classes.reviewArea}>
         <textarea
-          className={classes.reviewAreaContent}
+          className={classes.reviewAreaContentTitle}
           onChange={(e) => handleReviewTitleOnChange(e)}
           placeholder="レビューのタイトルを入力してください"
           cols={4}
@@ -303,6 +303,13 @@ const useStyles = makeStyles((theme) => ({
   reviewArea: {
     display: "flex",
     justifyContent: "center",
+  },
+  reviewAreaContentTitle: {
+    width: 500,
+    height: 50,
+    maxWidth: 640,
+    maxHeight: 260,
+    fontSize: 15,
   },
   reviewAreaContent: {
     marginTop: 20,

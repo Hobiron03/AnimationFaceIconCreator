@@ -22,14 +22,7 @@ const FreeReviewModal = () => {
 
   const [value, setValue] = useState<number | null>(2);
 
-  const [faceIcons, setFaceIcons] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [review, setReview] = useState("");
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const [reduceFaceIcons, setReduceFaceIcon] = useState([]);
-  const [reduceNum, _] = useState(13);
 
   const [isTitleScreen, setIsTitleScreen] = useState(true);
 
@@ -160,24 +153,6 @@ const useStyles = makeStyles((theme) => ({
   reviewModalFaceIcons: {
     display: "flex",
     justifyContent: "center",
-  },
-  reviewModalFaceIcon: {
-    cursor: "pointer",
-    margin: 3,
-    "&:hover": {
-      transition: "all 0.2s",
-      backgroundColor: "rgba(0, 0, 255, 0.1)",
-    },
-  },
-  reviewModalFaceIconSelected: {
-    cursor: "pointer",
-    margin: 3,
-    backgroundColor: "rgba(0, 0, 255, 0.3)",
-  },
-  reviewFaceIconMain: {
-    display: "flex",
-    justifyContent: "center",
-    margin: 10,
   },
   reviewArea: {
     margin: "0 auto",
