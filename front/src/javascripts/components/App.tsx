@@ -16,6 +16,8 @@ import NormalCoordinateArea from "./NormalCoordinateArea";
 import FreeDescriptionReview from "./FreeDescriptionReview";
 import B3Reviews from "./B3Reviews";
 import ReviewsResult from "./ReviewsResult";
+import AnalysisCoordinateArea from "./AnalysisCoordinateArea";
+import Analysis from "./Analysis";
 
 const App = () => {
   const initialState = {
@@ -132,6 +134,9 @@ const App = () => {
       <Router>
         <Switch>
           <Route path="/reviews-table">{ReivewScreen}</Route>
+          <Route path="/analysis">
+            <Analysis></Analysis>
+          </Route>
           <Route path="/free-review">
             <FreeDescriptionReview></FreeDescriptionReview>
           </Route>

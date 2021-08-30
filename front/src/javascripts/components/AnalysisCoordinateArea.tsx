@@ -11,10 +11,10 @@ import {
 import "../../images/BaseFace200.png";
 
 //----自分で定義した型をインポート---
-import Mouse from "../../javascripts/@types/mouse";
-import Eyebrow from "../../javascripts/@types/eyebrows";
-import Eye from "../../javascripts/@types/eye";
-import coordinate from "../../javascripts/@types/coordinate";
+import Mouse from "../@types/mouse";
+import Eyebrow from "../@types/eyebrows";
+import Eye from "../@types/eye";
+import coordinate from "../@types/coordinate";
 //----------------------------------------
 
 import { INITIAL_FACE_COLOR } from "../emotionColor";
@@ -86,7 +86,7 @@ let dataY: number[] = [];
 const herokuURL = "https://emoemoface.herokuapp.com/returnGIF";
 const GCS_URL = "https://storage.googleapis.com/faceicons/";
 
-const CoordinateArea = () => {
+const AnalysisCoordinateArea = () => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
 
@@ -690,53 +690,44 @@ const CoordinateArea = () => {
   };
 
   return (
-    <div className={classes.coordinateArea}>
-      <FaceReviewModal
-        isFaceIconReviewModalOpen={isFaceIconModalOpen}
-        setIsFaceIconModalOpen={setIsFaceIconModalOpen}
-        base64Images={base64Images}
-        animationFaceIcon={resultImage}
-        coordinateImage={coordinateImage}
-        writeStartTime={writeStartTime}
-        dataX={coordinateXArray}
-        dataY={coordinateYArray}
-      ></FaceReviewModal>
+    <>
+      <div className={classes.coordinateArea}>
+        <div></div>
 
-      <div></div>
-
-      <div className={classes.createFaceIconArea}>
-        <div className={classes.faceIcon} id="faceIconID">
-          <canvas id="facial-parts" width="150" height="150"></canvas>
+        <div className={classes.createFaceIconArea}>
+          <div className={classes.faceIcon} id="faceIconID">
+            <canvas id="facial-parts" width="150" height="150"></canvas>
+          </div>
+          <canvas
+            width="400"
+            height="400"
+            id="coordinate"
+            onMouseDown={(e) => HandleMouseDown(e)}
+            onMouseUp={(e) => HandleMouseUp(e)}
+            onMouseMove={(e) => HandleMouseMove(e)}
+          ></canvas>
         </div>
-        <canvas
-          width="400"
-          height="400"
-          id="coordinate"
-          onMouseDown={(e) => HandleMouseDown(e)}
-          onMouseUp={(e) => HandleMouseUp(e)}
-          onMouseMove={(e) => HandleMouseMove(e)}
-        ></canvas>
-      </div>
 
-      <div className={classes.wrapper}>
-        <Button
-          fullWidth={true}
-          variant="contained"
-          color="primary"
-          disabled={isCreatingFaceIcon}
-          onClick={handleOnOkButtonClick}
-        >
-          これでOK
-        </Button>
-        {isCreatingFaceIcon && (
-          <CircularProgress size={24} className={classes.buttonProgress} />
-        )}
-      </div>
+        <div className={classes.wrapper}>
+          <Button
+            fullWidth={true}
+            variant="contained"
+            color="primary"
+            disabled={isCreatingFaceIcon}
+            onClick={handleOnOkButtonClick}
+          >
+            これでOK
+          </Button>
+          {isCreatingFaceIcon && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
+        </div>
 
-      {/* <div>
+        {/* <div>
         <img src={resultImage} alt="" />
       </div> */}
-    </div>
+      </div>
+    </>
   );
 };
 
@@ -768,4 +759,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default CoordinateArea;
+export default AnalysisCoordinateArea;

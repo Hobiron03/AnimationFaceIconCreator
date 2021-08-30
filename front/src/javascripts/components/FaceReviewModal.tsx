@@ -10,6 +10,7 @@ type FaceReviewModalType = {
   setIsFaceIconModalOpen: () => void;
   base64Iimages: [];
   animationFaceIcon: string;
+  coordinateImage: any;
 };
 
 type SendFirebaseType = {
@@ -17,6 +18,10 @@ type SendFirebaseType = {
   title: string;
   staticFaceIcon: string[];
   reviews: string[];
+  coordinateImage: string;
+  dataX: number[];
+  dataY: number[];
+  writeMTime: number;
   mTime: number;
 };
 
@@ -25,6 +30,10 @@ const FaceReviewModal = ({
   setIsFaceIconModalOpen,
   base64Images,
   animationFaceIcon,
+  coordinateImage,
+  writeStartTime,
+  dataX,
+  dataY,
 }) => {
   const classes = useStyles();
   const [title, setTitle] = useState("");
@@ -42,6 +51,7 @@ const FaceReviewModal = ({
 
   const [isTitleScreen, setIsTitleScreen] = useState(true);
 
+  //画面が表示されてからの時間
   let startTime = 0;
   let endTime = 0;
 
@@ -148,7 +158,11 @@ const FaceReviewModal = ({
       title,
       staticFaceIcon: sendStaticFaceIcons,
       reviews: sendReviews,
+      coordinateImage,
+      dataX,
+      dataY,
       mTime: endTime - startTime,
+      writeMTime: endTime - writeStartTime,
     };
 
     //firebaseにレビューデータを送信
