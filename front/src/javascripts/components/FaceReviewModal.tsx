@@ -14,6 +14,7 @@ type FaceReviewModalType = {
 };
 
 type SendFirebaseType = {
+  name: string;
   animationFaceIcon: string;
   title: string;
   staticFaceIcon: string[];
@@ -50,6 +51,8 @@ const FaceReviewModal = ({
   const [reduceNum, _] = useState(13);
 
   const [isTitleScreen, setIsTitleScreen] = useState(true);
+
+  const [username, setUsername] = useState("");
 
   //画面が表示されてからの時間
   let startTime = 0;
@@ -140,20 +143,14 @@ const FaceReviewModal = ({
     newReview[selectedIndex] = review;
     setReviews(newReview);
 
-    // console.log(faceIcons);
-    // console.log("------------------");
-    // console.log(reviews);
-
     //ここでfirebaseに送信
     const sendStaticFaceIcons: string[] = faceIcons.filter(
       (faceIcon) => faceIcon != ""
     );
     const sendReviews: string[] = reviews.filter((review) => review != "");
 
-    // console.log(sendStaticFaceIcons);
-    // console.log("------------------");
-    // console.log(sendReviews);
     const sendData: SendFirebaseType = {
+      name: username,
       animationFaceIcon,
       title,
       staticFaceIcon: sendStaticFaceIcons,
@@ -181,6 +178,10 @@ const FaceReviewModal = ({
 
   const handleReviewTitleOnChange = (e) => {
     setTitle(e.target.value);
+  };
+
+  const handleUsernameOnChange = (e) => {
+    setUsername(e.target.value);
   };
 
   const ModalBodyReview = (
@@ -243,8 +244,16 @@ const FaceReviewModal = ({
 
   const ModalBodyTitle = (
     <div className={classes.paper}>
-      <h3>タイトル入力</h3>
+      <div>
+        <h3>なまえ</h3>
+        <input
+          className={classes.reviewUsernameInput}
+          onChange={(e) => handleUsernameOnChange(e)}
+          placeholder="なまえを入力してください"
+        />
+      </div>
 
+      <h3>タイトル入力</h3>
       <div className={classes.reviewFaceIconMain}>
         <img src={animationFaceIcon} alt="" width={150} height={150} />
       </div>
@@ -313,6 +322,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     margin: 10,
+  },
+  reviewUsernameInput: {
+    width: 300,
+    height: 20,
+    maxWidth: 640,
+    maxHeight: 260,
+    fontSize: 15,
   },
   reviewArea: {
     display: "flex",

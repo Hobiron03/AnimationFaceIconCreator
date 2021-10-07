@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
 type SendFirebaseType = {
+  name: string;
   value: number;
   title: string;
   review: string;
@@ -19,11 +20,9 @@ type SendFirebaseType = {
 const FreeReviewModal = () => {
   const classes = useStyles();
   const [title, setTitle] = useState("");
-
+  const [name, setName] = useState("");
   const [value, setValue] = useState<number | null>(2);
-
   const [review, setReview] = useState("");
-
   const [isTitleScreen, setIsTitleScreen] = useState(true);
 
   let startTime = 0;
@@ -43,6 +42,7 @@ const FreeReviewModal = () => {
 
     //ここでfirebaseに送信
     const sendData: SendFirebaseType = {
+      name,
       value,
       title,
       review,
@@ -68,6 +68,10 @@ const FreeReviewModal = () => {
 
   const handleReviewTitleOnChange = (e) => {
     setTitle(e.target.value);
+  };
+
+  const handleNameInpoutOnChange = (e) => {
+    setName(e.target.value);
   };
 
   const ModalBodyReview = (
@@ -103,6 +107,15 @@ const FreeReviewModal = () => {
   const ModalBodyTitle = (
     <div className={classes.paper}>
       <div className={classes.reviewArea}>
+        <div>
+          <h3>氏名入力</h3>
+          <textarea
+            className={classes.reviewAreaNameInput}
+            onChange={(e) => handleNameInpoutOnChange(e)}
+            cols={2}
+            rows={2}
+          ></textarea>
+        </div>
         <div>
           <h3>総合評価</h3>
           <Rating
@@ -156,6 +169,14 @@ const useStyles = makeStyles((theme) => ({
   },
   reviewArea: {
     margin: "0 auto",
+  },
+  reviewAreaNameInput: {
+    width: 500,
+    height: 25,
+    marginBottom: 40,
+    maxWidth: 640,
+    maxHeight: 260,
+    fontSize: 15,
   },
   reviewAreaContentTitle: {
     width: 500,
