@@ -17,6 +17,9 @@ const Card = (props: CardProps) => {
   const classes = useStyles();
   const [isReviewContentModalOpen, setIsReviewContentModalOpen] =
     useState(false);
+  const [startTime, setStartTime] = useState(0);
+  const [endTime, setEndTime] = useState(0);
+  const [viewTime, setViewTime] = useState(0);
 
   const reviewContentModal = () => {
     return isReviewContentModalOpen ? (
@@ -32,11 +35,12 @@ const Card = (props: CardProps) => {
 
   const toggleModalState = () => {
     setIsReviewContentModalOpen(false);
+    setViewTime(viewTime + performance.now() - startTime);
   };
 
   const displayReviewOnClick = () => {
-    console.log("Click modal");
     setIsReviewContentModalOpen(true);
+    setStartTime(performance.now());
   };
 
   return (
@@ -55,6 +59,9 @@ const Card = (props: CardProps) => {
             </div>
             <div>
               <p>{props.title}</p>
+              <p>{startTime}</p>
+
+              <p>{viewTime}</p>
             </div>
           </Paper>
         </div>

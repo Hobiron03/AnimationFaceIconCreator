@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "./Card";
 import AppContext from "../contexts/AppContext";
 import firebase from "../../../Firebase";
+import Typography from "@material-ui/core/Typography";
 
 interface FreeReivewData {
   movieTitle: string;
@@ -15,7 +16,6 @@ interface FreeReivewData {
 }
 
 const SelectMovieNormal = () => {
-  const { state, dispatch } = useContext(AppContext);
   const classes = useStyles();
   const [reviews, setReviews] = useState([]);
   const [review, setReview] = useState<FreeReivewData>({
@@ -27,8 +27,12 @@ const SelectMovieNormal = () => {
     value: 0,
   });
 
+  let startTime = 0;
+  let endTime = 0;
+
   useEffect(() => {
     GetReivews();
+    startTime = performance.now();
   }, []);
 
   const GetReivews = async () => {
@@ -41,11 +45,13 @@ const SelectMovieNormal = () => {
     <div>
       <div className={classes.content}>
         <div className={classes.left}>
-          <h2>乗り遅れた旅人</h2>
+          <Typography variant="h5" gutterBottom component="div">
+            乗り遅れた旅人
+          </Typography>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
               return review.movieTitle === "yokohama" ? (
-                <div className={classes.reviewList__border}>
+                <div className={classes.reviewList__border} key={index}>
                   <Card
                     value={review.value}
                     title={review.title}
@@ -58,11 +64,13 @@ const SelectMovieNormal = () => {
         </div>
 
         <div className={classes.right}>
-          <h2>シェイクスピア・イン・トーキョー</h2>
+          <Typography variant="h5" gutterBottom component="div">
+            シェイクスピア・イン・トーキョー
+          </Typography>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
               return review.movieTitle === "shakespeare" ? (
-                <div className={classes.reviewList__border}>
+                <div className={classes.reviewList__border} key={index}>
                   <Card
                     value={review.value}
                     title={review.title}
@@ -90,12 +98,12 @@ const useStyles = makeStyles((theme) => ({
   content: {
     display: "flex",
     justifyContent: "center",
-    margin: "0 auto",
+    margin: "50px auto",
     textAlign: "center",
   },
   left: {
     margin: "10px 10px 10px 10px",
-    width: "50%",
+    width: "40%",
   },
   reviewList__under: {
     display: "flex",
@@ -104,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
   },
   right: {
     margin: "10px 10px 10px 10px",
-    width: "50%",
+    width: "40%",
   },
 }));
 
