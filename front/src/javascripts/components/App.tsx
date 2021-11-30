@@ -14,9 +14,11 @@ import CoordinateArea from "./CoordinateArea";
 import FreeReviewPage from "./FreeReviewPage";
 import NormalCoordinateArea from "./NormalCoordinateArea";
 import FreeDescriptionReview from "./FreeDescriptionReview";
+import ProposeMethodReivewTable from "../components/ProposeMethodReivewTable";
 import B3Reviews from "./B3Reviews";
 import ReviewsResult from "./ReviewsResult";
 import AnalysisCoordinateArea from "./AnalysisCoordinateArea";
+import SelectMovieNormal from "./SelectMovieNormal";
 import Analysis from "./Analysis";
 
 const App = () => {
@@ -133,7 +135,13 @@ const App = () => {
     <AppContext.Provider value={{ state, dispatch }}>
       <Router>
         <Switch>
+          <Route path="/select-movie-normal">
+            <SelectMovieNormal></SelectMovieNormal>
+          </Route>
           <Route path="/reviews-table">{ReivewScreen}</Route>
+          <Route path="/new-face-reviews">
+            <ProposeMethodReivewTable></ProposeMethodReivewTable>
+          </Route>
           <Route path="/analysis">
             <Analysis></Analysis>
           </Route>
