@@ -18,21 +18,11 @@ interface FreeReivewData {
 const SelectMovieNormal = () => {
   const classes = useStyles();
   const [reviews, setReviews] = useState([]);
-  const [review, setReview] = useState<FreeReivewData>({
-    movieTitle: "",
-    mTime: 0,
-    name: "",
-    review: "",
-    title: "",
-    value: 0,
-  });
-
-  let startTime = 0;
-  let endTime = 0;
+  const [startTime, setStartTime] = useState(0);
 
   useEffect(() => {
     GetReivews();
-    startTime = performance.now();
+    setStartTime(performance.now());
   }, []);
 
   const GetReivews = async () => {

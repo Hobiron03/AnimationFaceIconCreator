@@ -26,22 +26,12 @@ const App = () => {
     filterEmotion: "",
     filterFaceIcon: [],
     filterDTW: { timeSeriesDataX: [], timeSeriesDataY: [] },
+    helpfulReview: [],
   };
   const [state, dispatch] = useReducer(reducer, initialState);
   const classes = useStyles();
 
   const [isOpenReviewModal, setIsOpenReviewModal] = useState(false);
-
-  const HandleFilterByEmotionButtonOnClick = (emotion) => {
-    dispatch({
-      type: FILTER_BY_EMOTION,
-      filterEmotion: emotion,
-    });
-  };
-
-  const HandleFilterByFaceIconOkButtonClick = () => {
-    CloseReviewModal();
-  };
 
   const OpenReviewModal = () => {
     setIsOpenReviewModal(true);

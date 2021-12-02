@@ -24,7 +24,6 @@ const Card = (props: CardProps) => {
   const reviewContentModal = () => {
     return isReviewContentModalOpen ? (
       <NormalReviewModal
-        isReviewContentModalOpen={isReviewContentModalOpen}
         toggleModalState={toggleModalState}
         value={props.value}
         title={props.title}
@@ -58,10 +57,7 @@ const Card = (props: CardProps) => {
               />
             </div>
             <div>
-              <p>{props.title}</p>
-              <p>{startTime}</p>
-
-              <p>{viewTime}</p>
+              <h3>{props.title}</h3>
             </div>
           </Paper>
         </div>

@@ -5,6 +5,7 @@ interface IProps {
     filterEmotion: any;
     filterFaceIcon: any;
     filterDTW: any;
+    helpfulReview: any;
   };
   dispatch: any;
 }
