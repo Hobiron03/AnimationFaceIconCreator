@@ -23,6 +23,10 @@ const SelectMovieNormal = () => {
     setReviews(reviews);
   };
 
+  const onReviewViewEndButton = () => {
+    console.log("読み終える");
+  };
+
   return (
     <div>
       <div className={classes.content}>
@@ -65,7 +69,11 @@ const SelectMovieNormal = () => {
         </div>
       </div>
       <div className={classes.okButton}>
-        <Button variant="contained" color="secondary">
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={onReviewViewEndButton}
+        >
           <Typography variant="h6" gutterBottom>
             レビューを読み終える
           </Typography>
