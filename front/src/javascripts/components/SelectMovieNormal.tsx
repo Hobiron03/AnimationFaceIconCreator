@@ -5,6 +5,7 @@ import Card from "./Card";
 import AppContext from "../contexts/AppContext";
 import firebase from "../../../Firebase";
 import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 
 const SelectMovieNormal = () => {
   const classes = useStyles();
@@ -63,6 +64,13 @@ const SelectMovieNormal = () => {
           </div>
         </div>
       </div>
+      <div className={classes.okButton}>
+        <Button variant="contained" color="secondary">
+          <Typography variant="h6" gutterBottom>
+            レビューを読み終える
+          </Typography>
+        </Button>
+      </div>
     </div>
   );
 };
@@ -94,6 +102,10 @@ const useStyles = makeStyles((theme) => ({
   right: {
     margin: "10px 10px 10px 10px",
     width: "40%",
+  },
+  okButton: {
+    textAlign: "center",
+    margin: "0 auto",
   },
 }));
 

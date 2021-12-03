@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useReducer, useState } from "react";
 import AppContext from "../contexts/AppContext";
 import reducer from "../reducers";
-import { FILTER_BY_EMOTION, FILTER_BY_FACEICON } from "../actions";
 
 import ReviewTable from "./ReviewTable";
 import Button from "@material-ui/core/Button";
@@ -15,9 +14,7 @@ import FreeReviewPage from "./FreeReviewPage";
 import NormalCoordinateArea from "./NormalCoordinateArea";
 import FreeDescriptionReview from "./FreeDescriptionReview";
 import ProposeMethodReivewTable from "../components/ProposeMethodReivewTable";
-import B3Reviews from "./B3Reviews";
-import ReviewsResult from "./ReviewsResult";
-import AnalysisCoordinateArea from "./AnalysisCoordinateArea";
+
 import SelectMovieNormal from "./SelectMovieNormal";
 import Analysis from "./Analysis";
 
