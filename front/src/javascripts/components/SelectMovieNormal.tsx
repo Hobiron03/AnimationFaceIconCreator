@@ -6,15 +6,6 @@ import AppContext from "../contexts/AppContext";
 import firebase from "../../../Firebase";
 import Typography from "@material-ui/core/Typography";
 
-interface FreeReivewData {
-  movieTitle: string;
-  mTime: number;
-  name: string;
-  review: string;
-  title: string;
-  value: number;
-}
-
 const SelectMovieNormal = () => {
   const classes = useStyles();
   const [reviews, setReviews] = useState([]);

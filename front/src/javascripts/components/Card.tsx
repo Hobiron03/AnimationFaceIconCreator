@@ -3,8 +3,6 @@ import { useState, useEffect, useContext } from "react";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
-import Typography from "@material-ui/core/Typography";
-// import DescModal from "../DescModal/DescModal";
 import NormalReviewModal from "./NormalReviewModal";
 
 interface CardProps {
@@ -18,7 +16,6 @@ const Card = (props: CardProps) => {
   const [isReviewContentModalOpen, setIsReviewContentModalOpen] =
     useState(false);
   const [startTime, setStartTime] = useState(0);
-  const [endTime, setEndTime] = useState(0);
   const [viewTime, setViewTime] = useState(0);
 
   const reviewContentModal = () => {
