@@ -2,13 +2,22 @@ import * as React from "React";
 import { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "./Card";
-import AppContext from "../contexts/AppContext";
 import firebase from "../../../Firebase";
 import Typography from "@material-ui/core/Typography";
+import AppContext from "../contexts/AppContext";
+
 import Button from "@material-ui/core/Button";
+
+interface sendData {
+  name: string;
+  reviews: [];
+  time: number;
+}
 
 const SelectMovieNormal = () => {
   const classes = useStyles();
+  const { state } = useContext(AppContext);
+  const [name, setName] = useState("");
   const [reviews, setReviews] = useState([]);
   const [startTime, setStartTime] = useState(0);
 
@@ -23,12 +32,38 @@ const SelectMovieNormal = () => {
     setReviews(reviews);
   };
 
-  const onReviewViewEndButton = () => {
+  const onReviewViewEndButton = async () => {
     console.log("読み終える");
+    // setSendData({
+    //   name: "",
+    //   helpfulReview: state.helpfulReview,
+    //   time: performance.now() - startTime,
+    // });
+    const sendData: sendData = {
+      name,
+      reviews: state.helpfulReview,
+      time: performance.now() - startTime,
+    };
+
+    const reviewsCollectionReference = firebase
+      .firestore()
+      .collection("readReviewNormal");
+
+    await reviewsCollectionReference.add(sendData);
+
+    console.log(name);
+  };
+
+  const handleChangeName = (e) => {
+    setName(e.target.value);
   };
 
   return (
     <div>
+      <div className={classes.inputName}>
+        <h4>氏名</h4>
+        <input type="text" onChange={(e) => handleChangeName(e)} />
+      </div>
       <div className={classes.content}>
         <div className={classes.left}>
           <Typography variant="h5" gutterBottom component="div">
@@ -114,6 +149,11 @@ const useStyles = makeStyles((theme) => ({
   okButton: {
     textAlign: "center",
     margin: "0 auto",
+  },
+  inputName: {
+    textAlign: "center",
+    margin: "0 auto",
+    height: 20,
   },
 }));
 

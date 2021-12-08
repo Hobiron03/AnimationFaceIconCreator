@@ -8,34 +8,39 @@ import Button from "@material-ui/core/Button";
 import AppContext from "../contexts/AppContext";
 import { ADD_HELPFUL_REVIEW } from "../actions/";
 
-const NormalReivewModal = ({ toggleModalState, value, title, content }) => {
+const NormalReivewModal = ({
+  toggleModalState,
+  value,
+  title,
+  content,
+  isHelpful,
+  setIsHelpful,
+}) => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
-  const [isHelpful, setIsHelpful] = useState(false);
+  // const [isHelpful, setIsHelpful] = useState(false);
 
   useEffect(() => {
-    state.helpfulReview.forEach((review) => {
-      if (review.title === title) {
-        setIsHelpful(true);
-      }
-    });
+    // state.helpfulReview.forEach((review) => {
+    //   if (isHelpful) {
+    //     setIsHelpful(true);
+    //   }
+    // });
   }, []);
 
   const CloseReviewModal = () => {
     toggleModalState();
   };
 
-  const onHelpfullButtonClick = () => {
-    dispatch({
-      type: ADD_HELPFUL_REVIEW,
-      review: {
-        title,
-        value,
-        content,
-      },
-    });
-    console.log("Dispatch Helpful Review");
-    console.log(state.helpfulReview);
+  const onHelpfulButtonClick = () => {
+    // dispatch({
+    //   type: ADD_HELPFUL_REVIEW,
+    //   review: {
+    //     title,
+    //     value,
+    //     content,
+    //   },
+    // });
 
     setIsHelpful(true);
   };
@@ -58,7 +63,7 @@ const NormalReivewModal = ({ toggleModalState, value, title, content }) => {
             <Button
               variant="outlined"
               color="primary"
-              onClick={onHelpfullButtonClick}
+              onClick={onHelpfulButtonClick}
             >
               役に立った
             </Button>
