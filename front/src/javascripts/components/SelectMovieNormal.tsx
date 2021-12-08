@@ -33,12 +33,6 @@ const SelectMovieNormal = () => {
   };
 
   const onReviewViewEndButton = async () => {
-    console.log("読み終える");
-    // setSendData({
-    //   name: "",
-    //   helpfulReview: state.helpfulReview,
-    //   time: performance.now() - startTime,
-    // });
     const sendData: sendData = {
       name,
       reviews: state.helpfulReview,
