@@ -16,6 +16,7 @@ import FreeDescriptionReview from "./FreeDescriptionReview";
 import ProposeMethodReivewTable from "../components/ProposeMethodReivewTable";
 
 import SelectMovieNormal from "./SelectMovieNormal";
+import SelectMoviePropose from "./SelectMoviePropose";
 import Analysis from "./Analysis";
 
 const App = () => {
@@ -124,6 +125,9 @@ const App = () => {
         <Switch>
           <Route path="/select-movie-normal">
             <SelectMovieNormal></SelectMovieNormal>
+          </Route>
+          <Route path="/select-movie-propose">
+            <SelectMoviePropose></SelectMoviePropose>
           </Route>
           <Route path="/reviews-table">{ReivewScreen}</Route>
           <Route path="/new-face-reviews">

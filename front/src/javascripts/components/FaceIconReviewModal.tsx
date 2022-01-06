@@ -1,0 +1,132 @@
+import * as React from "React";
+import { useState, useEffect, useContext } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Rating from "@material-ui/lab/Rating";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import AppContext from "../contexts/AppContext";
+
+import { ListItem } from "@material-ui/core";
+import { List } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
+import { Divider } from "@material-ui/core";
+import { ListItemText } from "@material-ui/core";
+import { ListItemAvatar } from "@material-ui/core";
+
+import { ADD_HELPFUL_REVIEW } from "../actions/";
+
+const FaceIconReivewModal = ({
+  toggleModalState,
+  animationFaceIcon,
+  staticFaceIcons,
+  title,
+  reviews,
+  isHelpful,
+  setIsHelpful,
+}) => {
+  const classes = useStyles();
+  const { state, dispatch } = useContext(AppContext);
+  // const [isHelpful, setIsHelpful] = useState(false);
+
+  useEffect(() => {
+    // state.helpfulReview.forEach((review) => {
+    //   if (isHelpful) {
+    //     setIsHelpful(true);
+    //   }
+    // });
+    console.log(staticFaceIcons);
+  }, []);
+
+  const CloseReviewModal = () => {
+    toggleModalState();
+  };
+
+  const onHelpfulButtonClick = () => {
+    // dispatch({
+    //   type: ADD_HELPFUL_REVIEW,
+    //   review: {
+    //     title,
+    //     value,
+    //     content,
+    //   },
+    // });
+
+    setIsHelpful(true);
+  };
+
+  return (
+    <Modal
+      open={true}
+      onClose={CloseReviewModal}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      style={{ overflow: "scroll" }}
+    >
+      <div className={classes.paper}>
+        <div className={classes.paper__title}>
+          <img src={animationFaceIcon} alt="" width="80" />
+          <h3>{title}</h3>
+        </div>
+
+        <List style={{ maxHeight: "200", overflow: "auto" }}>
+          {reviews.map((review, index) => {
+            return (
+              <ListItem alignItems="flex-start">
+                <div className={classes.paper__review}>
+                  <img
+                    src={staticFaceIcons[index]}
+                    alt=""
+                    width="80"
+                    className={classes.paper__review__img}
+                  />
+                  <p>{review}</p>
+                </div>
+              </ListItem>
+            );
+          })}
+        </List>
+
+        <div className={classes.paper__helpfulButton}>
+          {!isHelpful ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={onHelpfulButtonClick}
+            >
+              役に立った
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary" disabled={true}>
+              Thank you
+            </Button>
+          )}
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    width: 800,
+    margin: "70px auto",
+    borderRadius: 10,
+    backgroundColor: theme.palette.background.paper,
+    padding: "30px 25px 15px 25px",
+  },
+  paper__title: {
+    textAlign: "center",
+  },
+  paper__review: {
+    display: "flex",
+  },
+  paper__review__img: {
+    marginRight: 20,
+  },
+  paper__helpfulButton: {
+    marginTop: 25,
+  },
+}));
+
+export default FaceIconReivewModal;
