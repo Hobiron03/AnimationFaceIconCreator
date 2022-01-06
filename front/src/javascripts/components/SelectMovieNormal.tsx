@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "./Card";
 import firebase from "../../../Firebase";
 import Typography from "@material-ui/core/Typography";
+import Rating from "@material-ui/lab/Rating";
 import AppContext from "../contexts/AppContext";
 
 import Button from "@material-ui/core/Button";
@@ -18,6 +19,7 @@ const SelectMovieNormal = () => {
   const classes = useStyles();
   const { state } = useContext(AppContext);
   const [name, setName] = useState("");
+  const [searchRate, setSearchRate] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [startTime, setStartTime] = useState(0);
 
@@ -56,8 +58,26 @@ const SelectMovieNormal = () => {
     <div>
       <div className={classes.inputName}>
         <h4>氏名</h4>
-        <input type="text" onChange={(e) => handleChangeName(e)} />
+        <input
+          className={classes.inputName__form}
+          type="text"
+          onChange={(e) => handleChangeName(e)}
+        />
       </div>
+
+      <div className={classes.searchRate}>
+        <h3>検索</h3>
+
+        <Rating
+          size="large"
+          name="simple-controlled"
+          value={searchRate}
+          onChange={(event, newValue) => {
+            setSearchRate(newValue);
+          }}
+        />
+      </div>
+
       <div className={classes.content}>
         <div className={classes.left}>
           <Typography variant="h5" gutterBottom component="div">
@@ -65,15 +85,29 @@ const SelectMovieNormal = () => {
           </Typography>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
-              return review.movieTitle === "yokohama" ? (
-                <div className={classes.reviewList__border} key={index}>
-                  <Card
-                    value={review.value}
-                    title={review.title}
-                    review={review.review}
-                  ></Card>
-                </div>
-              ) : null;
+              if (review.movieTitle === "yokohama") {
+                if (searchRate) {
+                  return review.value === searchRate ? (
+                    <div className={classes.reviewList__border} key={index}>
+                      <Card
+                        value={review.value}
+                        title={review.title}
+                        review={review.review}
+                      ></Card>
+                    </div>
+                  ) : null;
+                } else {
+                  return (
+                    <div className={classes.reviewList__border} key={index}>
+                      <Card
+                        value={review.value}
+                        title={review.title}
+                        review={review.review}
+                      ></Card>
+                    </div>
+                  );
+                }
+              }
             })}
           </div>
         </div>
@@ -84,15 +118,29 @@ const SelectMovieNormal = () => {
           </Typography>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
-              return review.movieTitle === "shakespeare" ? (
-                <div className={classes.reviewList__border} key={index}>
-                  <Card
-                    value={review.value}
-                    title={review.title}
-                    review={review.review}
-                  ></Card>
-                </div>
-              ) : null;
+              if (review.movieTitle === "shakespeare") {
+                if (searchRate) {
+                  return review.value === searchRate ? (
+                    <div className={classes.reviewList__border} key={index}>
+                      <Card
+                        value={review.value}
+                        title={review.title}
+                        review={review.review}
+                      ></Card>
+                    </div>
+                  ) : null;
+                } else {
+                  return (
+                    <div className={classes.reviewList__border} key={index}>
+                      <Card
+                        value={review.value}
+                        title={review.title}
+                        review={review.review}
+                      ></Card>
+                    </div>
+                  );
+                }
+              }
             })}
           </div>
         </div>
@@ -147,7 +195,16 @@ const useStyles = makeStyles((theme) => ({
   inputName: {
     textAlign: "center",
     margin: "0 auto",
-    height: 20,
+    height: 100,
+  },
+  inputName__form: {
+    height: 30,
+    width: 200,
+  },
+  searchRate: {
+    textAlign: "center",
+    margin: "0 auto",
+    height: 50,
   },
 }));
 
