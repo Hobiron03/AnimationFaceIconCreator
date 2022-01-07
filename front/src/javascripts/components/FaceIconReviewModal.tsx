@@ -2,19 +2,12 @@ import * as React from "React";
 import { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
-import Rating from "@material-ui/lab/Rating";
-import Typography from "@material-ui/core/Typography";
+
 import Button from "@material-ui/core/Button";
 import AppContext from "../contexts/AppContext";
 
 import { ListItem } from "@material-ui/core";
 import { List } from "@material-ui/core";
-import { Paper } from "@material-ui/core";
-import { Divider } from "@material-ui/core";
-import { ListItemText } from "@material-ui/core";
-import { ListItemAvatar } from "@material-ui/core";
-
-import { ADD_HELPFUL_REVIEW } from "../actions/";
 
 const FaceIconReivewModal = ({
   toggleModalState,

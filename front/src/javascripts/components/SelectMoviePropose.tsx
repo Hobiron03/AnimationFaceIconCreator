@@ -53,16 +53,16 @@ const SelectMoviePropose = () => {
   };
 
   const onReviewViewEndButton = async () => {
-    // const sendData: sendData = {
-    //   name,
-    //   reviews: state.helpfulReview,
-    //   time: performance.now() - startTime,
-    // };
-    // const reviewsCollectionReference = firebase
-    //   .firestore()
-    //   .collection("readReviewNormal");
-    // await reviewsCollectionReference.add(sendData);
-    // console.log(name);
+    const sendData: sendData = {
+      name,
+      reviews: state.helpfulReviewPropose,
+      time: performance.now() - startTime,
+    };
+    const reviewsCollectionReference = firebase
+      .firestore()
+      .collection("helpfulReviewPropose");
+    await reviewsCollectionReference.add(sendData);
+    console.log(name);
   };
 
   const handleChangeName = (e) => {

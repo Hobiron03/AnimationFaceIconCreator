@@ -25,6 +25,7 @@ const App = () => {
     filterFaceIcon: [],
     filterDTW: { timeSeriesDataX: [], timeSeriesDataY: [] },
     helpfulReview: [],
+    helpfulReviewPropose: [],
   };
   const [state, dispatch] = useReducer(reducer, initialState);
   const classes = useStyles();

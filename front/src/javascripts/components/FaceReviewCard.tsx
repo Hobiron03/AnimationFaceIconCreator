@@ -5,7 +5,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
 import FaceIconReviewModal from "./FaceIconReviewModal";
 import AppContext from "../contexts/AppContext";
-import { ADD_HELPFUL_REVIEW, UPDATE_HELPFUL_REVIEW } from "../actions/";
+import {
+  ADD_HELPFUL_REVIEW_PROPOSE,
+  UPDATE_HELPFUL_REVIEW_PROPOSE,
+} from "../actions/";
 
 interface CardProps {
   animationFaceIcon: string;
@@ -41,33 +44,31 @@ const FaceReviewCard = (props: CardProps) => {
   const toggleModalState = () => {
     setIsReviewContentModalOpen(false);
 
-    // if (viewTime === 0) {
-    //   dispatch({
-    //     type: ADD_HELPFUL_REVIEW,
-    //     review: {
-    //       title: props.title,
-    //       value: props.value,
-    //       content: props.review,
-    //       isHelpful,
-    //       readTime: viewTime + performance.now() - startTime,
-    //     },
-    //   });
-    //   console.log("ADD REVIEW");
-    //   console.log(isHelpful);
-    // } else {
-    //   dispatch({
-    //     type: UPDATE_HELPFUL_REVIEW,
-    //     review: {
-    //       title: props.title,
-    //       value: props.value,
-    //       content: props.review,
-    //       isHelpful,
-    //       readTime: viewTime + performance.now() - startTime,
-    //     },
-    //   });
-    //   console.log("UPDATE REVIEW");
-    //   console.log(isHelpful);
-    // }
+    if (viewTime === 0) {
+      dispatch({
+        type: ADD_HELPFUL_REVIEW_PROPOSE,
+        review: {
+          title: props.title,
+          reviews: props.reviews,
+          isHelpful,
+          readTime: viewTime + performance.now() - startTime,
+        },
+      });
+      console.log("ADD REVIEW");
+      console.log(isHelpful);
+    } else {
+      dispatch({
+        type: UPDATE_HELPFUL_REVIEW_PROPOSE,
+        review: {
+          title: props.title,
+          reviews: props.reviews,
+          isHelpful,
+          readTime: viewTime + performance.now() - startTime,
+        },
+      });
+      console.log("UPDATE REVIEW");
+      console.log(isHelpful);
+    }
 
     console.log("state: ", state.helpfulReview);
     setViewTime(viewTime + performance.now() - startTime);
