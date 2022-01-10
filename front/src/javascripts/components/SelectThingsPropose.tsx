@@ -32,7 +32,7 @@ interface reviewData {
   writeMtime: number;
 }
 
-const SelectMoviePropose = () => {
+const SelectThingsPropose = () => {
   const classes = useStyles();
   const { state } = useContext(AppContext);
   const [name, setName] = useState("");
@@ -110,29 +110,6 @@ const SelectMoviePropose = () => {
       <div className={classes.content}>
         <div className={classes.left}>
           <Typography variant="h5" gutterBottom component="div">
-            乗り遅れた旅人
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (
-                review.movieTitle === "yokohama" &&
-                isSimilarTrajectory(review.dataX, review.dataY)
-              ) {
-                return (
-                  <div className={classes.reviewList__border} key={index}>
-                    <FaceReviewCard
-                      animationFaceIcon={review.animationFaceIcon}
-                      title={review.title}
-                      reviews={review.reviews}
-                      staticFaceIcons={review.staticFaceIcon}
-                    ></FaceReviewCard>
-                  </div>
-                );
-              }
-            })}
-          </div>
-
-          {/* <Typography variant="h5" gutterBottom component="div">
             ミニ四駆
           </Typography>
           <div className={classes.reviewList__under}>
@@ -153,34 +130,11 @@ const SelectMoviePropose = () => {
                 );
               }
             })}
-          </div> */}
+          </div>
         </div>
 
         <div className={classes.right}>
           <Typography variant="h5" gutterBottom component="div">
-            シェイクスピア・イン・トーキョー
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (
-                review.movieTitle === "shakespeare" &&
-                isSimilarTrajectory(review.dataX, review.dataY)
-              ) {
-                return (
-                  <div className={classes.reviewList__border} key={index}>
-                    <FaceReviewCard
-                      animationFaceIcon={review.animationFaceIcon}
-                      title={review.title}
-                      reviews={review.reviews}
-                      staticFaceIcons={review.staticFaceIcon}
-                    ></FaceReviewCard>
-                  </div>
-                );
-              }
-            })}
-          </div>
-
-          {/* <Typography variant="h5" gutterBottom component="div">
             スカイツリー
           </Typography>
           <div className={classes.reviewList__under}>
@@ -201,7 +155,7 @@ const SelectMoviePropose = () => {
                 );
               }
             })}
-          </div> */}
+          </div>
         </div>
       </div>
       <div className={classes.okButton}>
@@ -267,4 +221,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default SelectMoviePropose;
+export default SelectThingsPropose;

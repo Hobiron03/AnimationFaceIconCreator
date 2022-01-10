@@ -15,7 +15,7 @@ interface sendData {
   time: number;
 }
 
-const SelectMovieNormal = () => {
+const SelectThingsNormal = () => {
   const classes = useStyles();
   const { state } = useContext(AppContext);
   const [name, setName] = useState("");
@@ -81,37 +81,6 @@ const SelectMovieNormal = () => {
       <div className={classes.content}>
         <div className={classes.left}>
           <Typography variant="h5" gutterBottom component="div">
-            乗り遅れた旅人
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (review.movieTitle === "yokohama") {
-                if (searchRate) {
-                  return review.value === searchRate ? (
-                    <div className={classes.reviewList__border} key={index}>
-                      <Card
-                        value={review.value}
-                        title={review.title}
-                        review={review.review}
-                      ></Card>
-                    </div>
-                  ) : null;
-                } else {
-                  return (
-                    <div className={classes.reviewList__border} key={index}>
-                      <Card
-                        value={review.value}
-                        title={review.title}
-                        review={review.review}
-                      ></Card>
-                    </div>
-                  );
-                }
-              }
-            })}
-          </div>
-
-          <Typography variant="h5" gutterBottom component="div">
             ミニ四駆
           </Typography>
           <div className={classes.reviewList__under}>
@@ -144,37 +113,6 @@ const SelectMovieNormal = () => {
         </div>
 
         <div className={classes.right}>
-          <Typography variant="h5" gutterBottom component="div">
-            シェイクスピア・イン・トーキョー
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (review.movieTitle === "shakespeare") {
-                if (searchRate) {
-                  return review.value === searchRate ? (
-                    <div className={classes.reviewList__border} key={index}>
-                      <Card
-                        value={review.value}
-                        title={review.title}
-                        review={review.review}
-                      ></Card>
-                    </div>
-                  ) : null;
-                } else {
-                  return (
-                    <div className={classes.reviewList__border} key={index}>
-                      <Card
-                        value={review.value}
-                        title={review.title}
-                        review={review.review}
-                      ></Card>
-                    </div>
-                  );
-                }
-              }
-            })}
-          </div>
-
           <Typography variant="h5" gutterBottom component="div">
             スカイツリー
           </Typography>
@@ -270,4 +208,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default SelectMovieNormal;
+export default SelectThingsNormal;

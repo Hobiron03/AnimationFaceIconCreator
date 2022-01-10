@@ -1,0 +1,760 @@
+import * as React from "React";
+import { useState, useEffect, useContext } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import AppContext from "../contexts/AppContext";
+import {
+  FILTER_BY_FACEICON,
+  FILTER_BY_EMOTION,
+  FILTER_BY_DTW,
+} from "../actions";
+
+import "../../images/BaseFace200.png";
+
+//----自分で定義した型をインポート---
+import Mouse from "../../javascripts/@types/mouse";
+import Eyebrow from "../../javascripts/@types/eyebrows";
+import Eye from "../../javascripts/@types/eye";
+import coordinate from "../../javascripts/@types/coordinate";
+//----------------------------------------
+
+import { INITIAL_FACE_COLOR } from "../emotionColor";
+
+//----自作した関数のインポート（srcのディレクトリに配置してある）---
+import PostImageData from "../PostImageData";
+import ConvertRgbFormat from "../ConvertRgbFormat";
+import CalculateColor from "../CalculateColor";
+import FormatImageData from "../FormatImageData";
+//----------------------------------------
+
+import html2canvas from "html2canvas";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { green } from "@material-ui/core/colors";
+
+import FaceReviewModal from "./FaceReviewModal";
+
+enum Color {
+  BLACK = "black",
+  BLUE = "#629BEAa",
+  RED = "#FF5823",
+}
+
+let mouse: Mouse = {
+  startPosX: 0,
+  startPosY: 0,
+  bezierControlPosX: 0,
+  bezierControlPosY: 0,
+  endPosX: 0,
+  endPosY: 0,
+  maxUShapePos: 0,
+  lineWidth: 0,
+};
+
+let leftEyebrow: Eyebrow = {
+  startPosX: 0,
+  startPosY: 0,
+  endPosX: 0,
+  endPosY: 0,
+  lineWidth: 0,
+  maxEndHeight: 0,
+};
+let rightEyebrow: Eyebrow = {
+  startPosX: 0,
+  startPosY: 0,
+  endPosX: 0,
+  endPosY: 0,
+  lineWidth: 0,
+  maxEndHeight: 0,
+};
+
+let rightEye: Eye = {
+  pos: 0,
+  size: 0,
+};
+let leftEye: Eye = {
+  pos: 0,
+  size: 0,
+};
+
+let corrdinate: coordinate = {
+  width: 0,
+  height: 0,
+};
+
+let dataX: number[] = [];
+let dataY: number[] = [];
+const herokuURL = "https://emoemoface.herokuapp.com/returnGIF";
+const GCS_URL = "https://storage.googleapis.com/faceicons/";
+
+const CoordinateAreaInSearchPage = () => {
+  const classes = useStyles();
+  const { state, dispatch } = useContext(AppContext);
+
+  const [resultImage, setReusltImage] = useState("");
+  const [base64Images, setBase64Images] = useState([]);
+
+  // Coordinate
+  const [cctx, setContext] = useState(null);
+  const [coordinateCanvas, setCoordinateCanvas] = useState(null);
+  const [coordinateImage, setCoordinateImage] = useState("");
+
+  // 顔アイコン
+  const [fpctx, setFaceIconContext] = useState(null);
+  const [facialPartsCanvas, setFacialPartsCanvas] = useState(null);
+
+  // 顔アイコンのbackground
+  const [fbctx, setFaceIconBackgroundContext] = useState(null);
+  const [facialBackgroundCanvas, setFacialBackgroundCanvas] = useState(null);
+
+  const [emotionFaceDiv, setEmotionFaceDiv] = useState(null);
+  const [coordinateDiv, setCoordinateDiv] = useState(null);
+  // 画像読み込み完了トリガー
+  const [loaded, setLoaded] = useState(false);
+
+  const [isFaceIconModalOpen, setIsFaceIconModalOpen] = useState(false);
+
+  const [isCreatingFaceIcon, setIsCreatingFaceIcon] = useState(false);
+
+  const [writeStartTime, setWriteStartTime] = useState(0);
+
+  const [coordinateXArray, setCoordinateXArray] = useState<Array<number>>([]);
+  const [coordinateYArray, setCoordinateYArray] = useState<Array<number>>([]);
+
+  useEffect(() => {
+    const coordinateCanvas: HTMLCanvasElement = document.getElementById(
+      "coordinate"
+    ) as HTMLCanvasElement;
+    setCoordinateCanvas(coordinateCanvas);
+
+    const cctx: CanvasRenderingContext2D | null =
+      coordinateCanvas.getContext("2d");
+    setContext(cctx);
+
+    // 顔アイコンの口を描画のCanvas
+    const facialPartsCanvas: HTMLCanvasElement = document.getElementById(
+      "facial-parts"
+    ) as HTMLCanvasElement;
+    setFacialPartsCanvas(facialPartsCanvas);
+
+    const fpctx: CanvasRenderingContext2D | null =
+      facialPartsCanvas.getContext("2d");
+    setFaceIconContext(fpctx);
+
+    // face background
+    const facialBackgroundCanvas: HTMLCanvasElement = document.getElementById(
+      "facial-background"
+    ) as HTMLCanvasElement;
+    setFacialBackgroundCanvas(facialBackgroundCanvas);
+
+    const fbctx: CanvasRenderingContext2D | null =
+      facialPartsCanvas.getContext("2d");
+    setFaceIconBackgroundContext(fbctx);
+
+    const emotionFaceDiv: HTMLElement | null =
+      document.getElementById("faceIconID");
+    setEmotionFaceDiv(emotionFaceDiv);
+
+    const coordinateDiv: HTMLElement | null =
+      document.getElementById("coordinate");
+    setCoordinateDiv(coordinateDiv);
+  }, []);
+
+  useEffect(() => {
+    if (cctx !== null) {
+      let background: HTMLImageElement = new Image();
+      const imageURL: string = "../images/Cordinate.png";
+      background.src = imageURL;
+      //画像をCanvasのサイズに合わせて等倍して画像をcanvasに貼り付ける.
+      background.onload = () => {
+        if (cctx) {
+          cctx.drawImage(
+            background,
+            0,
+            0,
+            coordinateCanvas.width,
+            (background.height * coordinateCanvas.width) / background.width
+          );
+        }
+      };
+    }
+    setLoaded(true);
+  }, [cctx]);
+
+  useEffect(() => {
+    if (loaded) {
+      // それに続く処理
+      DrawCoordinateImage();
+
+      InitFacialParts();
+      renderFaceiconBackground();
+    }
+  }, [loaded]);
+
+  const renderFaceiconBackground = () => {
+    let background: HTMLImageElement = new Image();
+    const imageURL: string = "../../images/BaseFace.png";
+    background.src = imageURL;
+    //画像をCanvasのサイズに合わせて等倍して画像をcanvasに貼り付ける.
+    background.onload = () => {
+      if (fbctx) {
+        fbctx.drawImage(
+          background,
+          0,
+          0,
+          facialBackgroundCanvas.width,
+          (background.height * facialBackgroundCanvas.width) / background.width
+        );
+      }
+    };
+  };
+
+  //x座標とy座標から対応する感情を返却する（喜怒哀楽）
+  const ReturnEmotion = (x: number, y: number): string => {
+    if (x >= 0 && x < 200 && y >= 0 && y <= 200) {
+      // x: 0 ~ 200 && y: 0 ~ 200 -> 怒り
+      return "Angry";
+    } else if (x >= 0 && x <= 200 && y > 200 && y <= 400) {
+      // x: 0 ~ 200 && y: 200 ~ 400 -> 悲しみ
+      return "Sad";
+    } else if (x >= 200 && x <= 400 && y > 200 && y <= 400) {
+      // x: 200 ~ 400 && y: 0 ~ 200 -> 喜び
+      return "Pleasure";
+    } else if (x >= 200 && x <= 400 && y >= 0 && y <= 200) {
+      // x: 200 ~ 400 && y: 200 ~ 400 -> 楽しみ
+      return "Happy";
+    } else {
+      return "NONE";
+    }
+  };
+
+  // 顔アイコン作成Canvasの背景画像を描画する
+  const DrawCoordinateImage = (): void => {
+    let background: HTMLImageElement = new Image();
+    const imageURL: string = "../images/Cordinate.png";
+    background.src = imageURL;
+    //画像をCanvasのサイズに合わせて等倍して画像をcanvasに貼り付ける.
+    background.onload = () => {
+      if (cctx) {
+        cctx.drawImage(
+          background,
+          0,
+          0,
+          coordinateCanvas.width,
+          (background.height * coordinateCanvas.width) / background.width
+        );
+      }
+    };
+  };
+
+  const ResetCoordinate = (): void => {
+    if (cctx) {
+      cctx.clearRect(0, 0, cctx.canvas.clientWidth, cctx.canvas.clientHeight);
+      // dataX.splice(0);
+      // dataY.splice(0);
+      DrawCoordinateImage();
+    }
+  };
+
+  //---------HandleMouseDown----------------------
+  //後にuseStateに置き換える必要あり？
+  let isMouseDrag: boolean = false;
+  //前フレームの点を保持する変数
+  let preMousePosX: number;
+  let preMousePosY: number;
+
+  let startPosX: number;
+  let startPosY: number;
+  let images = [];
+  const HandleMouseDown = (
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+  ) => {
+    //前の軌跡を消去
+    ResetCoordinate();
+    isMouseDrag = true;
+    //canvasの原点は左上
+    preMousePosX = e.nativeEvent.offsetX;
+    preMousePosY = e.nativeEvent.offsetY;
+
+    //始点の描画
+    if (cctx) {
+      cctx.beginPath();
+      cctx.strokeStyle = "blue";
+      cctx.lineWidth = 20;
+      cctx.lineCap = "round";
+      cctx.globalCompositeOperation = "source-over";
+      //全フレームの点と結ぶ
+      cctx.lineTo(preMousePosX, preMousePosY);
+      cctx.stroke();
+
+      if (fpctx) {
+        DrawFace(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+        startPosX = e.nativeEvent.offsetX;
+        startPosY = e.nativeEvent.offsetY;
+      }
+    }
+  };
+
+  //----------ドラッグ中----------------------
+  let pre: any = 0;
+  let cur: any = 0;
+  let elapsedTime: number = 0;
+  let faceScale: number = 1.0;
+  const fpsInterval: number = (1.0 / 30) * 1000; //60fps
+  const HandleMouseMove = (
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+  ) => {
+    if (isMouseDrag) {
+      cur = Date.now();
+      elapsedTime += cur - pre;
+
+      if (elapsedTime > fpsInterval) {
+        //canvasの原点は左上
+        const mousePosX: number = e.nativeEvent.offsetX;
+        const mousePosY: number = e.nativeEvent.offsetY;
+
+        //軌跡の描画
+        if (cctx) {
+          cctx.beginPath();
+          cctx.strokeStyle = Color.BLACK;
+          cctx.lineWidth = 2;
+          cctx.lineCap = "round";
+          cctx.globalCompositeOperation = "source-over";
+          cctx.moveTo(mousePosX, mousePosY);
+          //前フレームの点と結ぶ
+          cctx.lineTo(preMousePosX, preMousePosY);
+          cctx.stroke();
+
+          if (fpctx) {
+            DrawFace(mousePosX, mousePosY);
+
+            images.push(facialPartsCanvas.toDataURL());
+
+            dataX.push(mousePosX);
+            dataY.push(mousePosY);
+            //座標によって顔アイコンの顔を変化させる
+            //SetEmotionColor(preMousePosX, preMousePosY);
+          }
+        }
+        preMousePosX = mousePosX;
+        preMousePosY = mousePosY;
+
+        if (false) {
+          SetEmotionColor(preMousePosX, preMousePosY);
+          console.log("chage color");
+        }
+        elapsedTime = 0;
+      }
+      pre = Date.now();
+    }
+  };
+
+  //x座標とy座標から感情に対応した色人変化させる
+  const SetEmotionColor = (x: number, y: number): void => {
+    if (x >= 0 && x < 160 && y >= 0 && y <= 160) {
+      // x: 0 ~ 200 && y: 0 ~ 200 -> 怒り
+      let faceColor = { r: 255, g: 0, b: 0 };
+      if (x >= y) {
+        faceColor = CalculateColor(x, y, 1);
+      } else {
+        faceColor = CalculateColor(x, y, 2);
+      }
+
+      if (emotionFaceDiv) {
+        emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(
+          faceColor.r,
+          faceColor.g,
+          faceColor.b
+        );
+      }
+    } else if (x >= 0 && x <= 160 && y > 240 && y <= 400) {
+      // x: 0 ~ 200 && y: 200 ~ 400 -> 悲しみ
+
+      let faceColor = { r: 255, g: 0, b: 0 };
+      if (160 - x >= y - 240) {
+        faceColor = CalculateColor(160 - x, y - 240, 3);
+      } else {
+        faceColor = CalculateColor(x, y, 4);
+      }
+
+      if (emotionFaceDiv) {
+        emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(
+          faceColor.r,
+          faceColor.g,
+          faceColor.b
+        );
+      }
+    } else if (x >= 240 && x <= 400 && y > 240 && y <= 400) {
+      // x: 200 ~ 400 && y: 0 ~ 200 -> 喜び
+      let faceColor = { r: 255, g: 0, b: 0 };
+      if (x >= y) {
+        faceColor = CalculateColor(x - 240, y - 240, 6);
+      } else {
+        faceColor = CalculateColor(x - 240, y - 240, 5);
+      }
+
+      if (emotionFaceDiv) {
+        emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(
+          faceColor.r,
+          faceColor.g,
+          faceColor.b
+        );
+      }
+    } else if (x >= 240 && x <= 400 && y >= 0 && y <= 160) {
+      // x: 200 ~ 400 && y: 200 ~ 400 -> 楽しみ
+      let faceColor = { r: 255, g: 0, b: 0 };
+      if (x - 240 > 160 - y) {
+        faceColor = CalculateColor(x - 240, 160 - y, 7);
+      } else if (x - 240 === 160 - y) {
+        console.log("SAME");
+      } else {
+        faceColor = CalculateColor(x - 240, 160 - y, 8);
+      }
+      if (emotionFaceDiv) {
+        emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(
+          faceColor.r,
+          faceColor.g,
+          faceColor.b
+        );
+      }
+    } else {
+      if (emotionFaceDiv) {
+        emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(
+          INITIAL_FACE_COLOR.r,
+          INITIAL_FACE_COLOR.g,
+          INITIAL_FACE_COLOR.b
+        );
+      }
+    }
+  };
+
+  let endPosX: number = 0;
+  let endPosY: number = 0;
+  const HandleMouseUp = (
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+  ) => {
+    isMouseDrag = false;
+    //終点の描画
+    if (cctx) {
+      cctx.beginPath();
+      cctx.strokeStyle = "red";
+      cctx.lineWidth = 20;
+      cctx.lineCap = "round";
+      cctx.globalCompositeOperation = "source-over";
+      //全フレームの点と結ぶ
+      cctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      cctx.stroke();
+    }
+
+    //視点と終点のみを見る際に使用するフィルター
+    // let startEmotion = ReturnEmotion(startPosX, startPosY);
+    // let endEmotion = ReturnEmotion(
+    //   e.nativeEvent.offsetX,
+    //   e.nativeEvent.offsetY
+    // );
+    // dispatch({
+    //   type: FILTER_BY_FACEICON,
+    //   filterFaceIcon: [startEmotion, endEmotion],
+    // });
+
+    //DTWの計算で使用する、検索用の軌跡データを保存しておく。
+    dispatch({
+      type: FILTER_BY_DTW,
+      timeSeriesData: { timeSeriesDataX: dataX, timeSeriesDataY: dataY },
+    });
+    setBase64Images(images);
+    setCoordinateXArray(dataX);
+    setCoordinateYArray(dataY);
+    dataX = [];
+    dataY = [];
+  };
+
+  const ResetFacialParts = (): void => {
+    if (fpctx) {
+      fpctx.clearRect(
+        0,
+        0,
+        fpctx.canvas.clientWidth,
+        fpctx.canvas.clientHeight
+      );
+
+      const baseFace = new Image();
+      baseFace.src = "../../images/BaseFace200.png";
+      fpctx.drawImage(baseFace, 0, 0, 150, 150);
+    }
+  };
+
+  const RenderMouth = (x: number): void => {
+    //x座標から口の傾きを計算する width400で-66から66くらい
+    //xの値を0 ~ mouse.maxUShapePos*2の範囲に正規化
+    let curveDegree = (x * (mouse.maxUShapePos * 2)) / corrdinate.width;
+    if (curveDegree > mouse.maxUShapePos) {
+      curveDegree = curveDegree - mouse.maxUShapePos;
+    } else if (x < corrdinate.height / 2) {
+      curveDegree = curveDegree - mouse.maxUShapePos;
+    } else {
+      //x座標が0のとき
+      curveDegree = 0;
+    }
+    //口の描画
+    if (fpctx) {
+      fpctx.beginPath();
+      fpctx.strokeStyle = Color.BLACK;
+      fpctx.lineWidth = mouse.lineWidth;
+      fpctx.lineCap = "round";
+      fpctx.globalCompositeOperation = "source-over";
+      fpctx.moveTo(mouse.startPosX, mouse.endPosY);
+      fpctx.quadraticCurveTo(
+        mouse.bezierControlPosX,
+        mouse.bezierControlPosY + curveDegree,
+        mouse.endPosX,
+        mouse.endPosY
+      );
+      fpctx.stroke();
+    }
+  };
+
+  //顔アイコンの眉パーツを描画する。Y座標の大きさによって眉の傾き具合が変わる
+  const RenderEyebrows = (y: number): void => {
+    // y座標から眉尻の高さを計算する height:0~400で 眉:-15~15くらい
+    let endOfEyebrowsHeight =
+      (y * (rightEyebrow.maxEndHeight * 2)) / corrdinate.height;
+    if (endOfEyebrowsHeight > rightEyebrow.maxEndHeight) {
+      endOfEyebrowsHeight = endOfEyebrowsHeight - rightEyebrow.maxEndHeight;
+    } else if (y < corrdinate.height / 2) {
+      endOfEyebrowsHeight = endOfEyebrowsHeight - rightEyebrow.maxEndHeight;
+    } else {
+      //y座標が0のとき
+      endOfEyebrowsHeight = 0;
+    }
+
+    //眉の描画
+    if (fpctx) {
+      //左側の眉の描画
+      fpctx.beginPath();
+      fpctx.strokeStyle = "black";
+      fpctx.lineWidth = leftEyebrow.lineWidth;
+      fpctx.lineCap = "round";
+      fpctx.globalCompositeOperation = "source-over";
+      fpctx.moveTo(
+        leftEyebrow.startPosX,
+        leftEyebrow.startPosY + endOfEyebrowsHeight
+      ); //眉尻
+      fpctx.lineTo(leftEyebrow.endPosX, leftEyebrow.endPosY);
+      fpctx.stroke();
+
+      //右側の眉の描画
+      fpctx.beginPath();
+      fpctx.strokeStyle = "black";
+      fpctx.lineWidth = rightEyebrow.lineWidth;
+      fpctx.lineCap = "round";
+      fpctx.globalCompositeOperation = "source-over";
+      fpctx.moveTo(
+        rightEyebrow.startPosX,
+        rightEyebrow.startPosY + endOfEyebrowsHeight
+      ); //眉尻
+      fpctx.lineTo(rightEyebrow.endPosX, rightEyebrow.endPosY);
+      fpctx.stroke();
+    }
+  };
+
+  const RenderEye = (x: number): void => {
+    if (fpctx) {
+      /* コンテキスト設定 */
+      fpctx.strokeStyle = "#333"; // 塗りつぶしは暗めの色
+      fpctx.fillStyle = "#000"; // 線は赤色
+      // 線の幅は5px
+
+      /* 円の描画 */
+      fpctx.beginPath(); // パスの初期化
+      fpctx.arc(
+        facialPartsCanvas.clientWidth / 2 + rightEye.pos,
+        facialPartsCanvas.clientHeight / 2,
+        10,
+        0,
+        2 * Math.PI
+      ); // (100, 50)の位置に半径30pxの円
+      fpctx.closePath(); // パスを閉じる
+      fpctx.fill(); // 軌跡の範囲を塗りつぶす
+
+      /* 円の描画 */
+      fpctx.beginPath(); // パスの初期化
+      fpctx.arc(
+        facialPartsCanvas.clientWidth / 2 - leftEye.pos,
+        facialPartsCanvas.clientHeight / 2,
+        10,
+        0,
+        2 * Math.PI
+      ); // (100, 50)の位置に半径30pxの円
+      fpctx.closePath(); // パスを閉じる
+      fpctx.fill(); // 軌跡の範囲を塗りつぶす
+      ///////////////////////////////////////////////////////////////
+    }
+  };
+
+  const DrawFace = (x: number, y: number): void => {
+    ResetFacialParts();
+    RenderMouth(x);
+    RenderEye(x);
+    RenderEyebrows(y);
+  };
+
+  const faceSizeRatio: number = 0.75;
+  const InitFacialParts = (): void => {
+    if (!emotionFaceDiv) {
+      console.log("ERR! emotion-face div-element does not exit");
+      return;
+    }
+
+    if (!coordinateDiv) {
+      console.log("ERR! coordinate div-element does not exit");
+      return;
+    }
+
+    //顔アイコンの初期の色を設定
+    emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(255, 194, 0);
+    // emotionFaceDiv.style.backgroundColor = ConvertRgbFormat(30, 30, 30);
+
+    // emotionFaceDiv.style.backgroundImage = "url(../../images/gankotyan.png)";
+
+    corrdinate.width = coordinateDiv.clientWidth;
+    corrdinate.height = coordinateDiv.clientHeight;
+
+    const faceWidth = emotionFaceDiv.clientWidth;
+    const faceHeight = emotionFaceDiv.clientWidth;
+
+    //顔画像の中心座標
+    const centerPosX: number = faceWidth / 2;
+    const centerPosY: number = faceHeight / 2;
+
+    //口の相対的な位置（中心からの距離）
+    const offsetMouseWidth: number = faceWidth / 5;
+    const offsetMouseHeight: number = faceHeight / 4;
+
+    //顔アイコンにおける口の相対的な場所を求める
+    //顔アイコンの大きさに変化があっても良いように...!
+    mouse.startPosX = centerPosX - offsetMouseWidth;
+    mouse.startPosY = centerPosY + offsetMouseHeight;
+    mouse.bezierControlPosX = centerPosX;
+    mouse.bezierControlPosY = centerPosY + offsetMouseHeight;
+    mouse.endPosX = centerPosX + offsetMouseWidth;
+    mouse.endPosY = centerPosY + offsetMouseHeight;
+    mouse.maxUShapePos = faceWidth / 3;
+    mouse.lineWidth = 4 * faceSizeRatio;
+
+    //眉の相対的な場所を求める
+    //左眉
+    leftEyebrow.lineWidth = 3 * faceSizeRatio;
+    leftEyebrow.startPosX = centerPosX - 45 * faceSizeRatio;
+    leftEyebrow.startPosY = centerPosY - 33 * faceSizeRatio;
+    leftEyebrow.endPosX = centerPosX - 20 * faceSizeRatio;
+    leftEyebrow.endPosY = centerPosY - 33 * faceSizeRatio;
+    leftEyebrow.maxEndHeight = (faceHeight / 13) * faceSizeRatio;
+    //右眉
+    rightEyebrow.lineWidth = 3 * faceSizeRatio;
+    rightEyebrow.startPosX = centerPosX + 45 * faceSizeRatio;
+    rightEyebrow.startPosY = centerPosY - 33 * faceSizeRatio;
+    rightEyebrow.endPosX = centerPosX + 20 * faceSizeRatio;
+    rightEyebrow.endPosY = centerPosY - 33 * faceSizeRatio;
+    rightEyebrow.maxEndHeight = faceHeight / (13 * faceSizeRatio);
+
+    //目の設定
+    rightEye.size = 25 * faceSizeRatio;
+    rightEye.pos = 35 * faceSizeRatio;
+    leftEye.size = 25 * faceSizeRatio;
+    leftEye.pos = 35 * faceSizeRatio;
+
+    DrawFace(corrdinate.height / 2, corrdinate.height / 2);
+  };
+
+  const handleOnOkButtonClick = async () => {
+    // //大体30fps
+    setIsCreatingFaceIcon(true);
+
+    await PostImageData(FormatImageData(base64Images), herokuURL)
+      .then((image_name) => {
+        const name = `${GCS_URL}${image_name}`;
+
+        // setGIF(image_name);
+        // setImageToresultImage(name);
+        setReusltImage(name);
+        setIsCreatingFaceIcon(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // setBase64Images([]);
+
+    setIsFaceIconModalOpen(true);
+    setCoordinateImage(coordinateCanvas.toDataURL());
+    setWriteStartTime(performance.now());
+  };
+
+  return (
+    <div className={classes.coordinateArea}>
+      <FaceReviewModal
+        isFaceIconReviewModalOpen={isFaceIconModalOpen}
+        setIsFaceIconModalOpen={setIsFaceIconModalOpen}
+        base64Images={base64Images}
+        animationFaceIcon={resultImage}
+        coordinateImage={coordinateImage}
+        writeStartTime={writeStartTime}
+        dataX={coordinateXArray}
+        dataY={coordinateYArray}
+      ></FaceReviewModal>
+
+      <div className={classes.createFaceIconArea}>
+        <div className={classes.faceIcon} id="faceIconID">
+          <canvas id="facial-parts" width="150" height="150"></canvas>
+        </div>
+        <canvas
+          width="350"
+          height="350"
+          id="coordinate"
+          onMouseDown={(e) => HandleMouseDown(e)}
+          onMouseUp={(e) => HandleMouseUp(e)}
+          onMouseMove={(e) => HandleMouseMove(e)}
+        ></canvas>
+      </div>
+
+      <div className={classes.wrapper}>
+        {isCreatingFaceIcon && (
+          <CircularProgress size={24} className={classes.buttonProgress} />
+        )}
+      </div>
+
+      {/* <div>
+        <img src={resultImage} alt="" />
+      </div> */}
+    </div>
+  );
+};
+
+const useStyles = makeStyles((theme) => ({
+  coordinateArea: {
+    margin: "0 auto",
+    width: 420,
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
+  faceIcon: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    backgroundSize: "cover",
+  },
+  createFaceIconArea: {
+    display: "flex",
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
+  },
+}));
+
+export default CoordinateAreaInSearchPage;

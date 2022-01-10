@@ -18,6 +18,8 @@ import ProposeMethodReivewTable from "../components/ProposeMethodReivewTable";
 import SelectMovieNormal from "./SelectMovieNormal";
 import SelectMoviePropose from "./SelectMoviePropose";
 import Analysis from "./Analysis";
+import SelectThingsNormal from "./SelectThingsNormal";
+import SelectThingsPropose from "./SelectThingsPropose";
 
 const App = () => {
   const initialState = {
@@ -124,6 +126,12 @@ const App = () => {
     <AppContext.Provider value={{ state, dispatch }}>
       <Router>
         <Switch>
+          <Route path="/select-things-normal">
+            <SelectThingsNormal></SelectThingsNormal>
+          </Route>
+          <Route path="/select-things-propose">
+            <SelectThingsPropose></SelectThingsPropose>
+          </Route>
           <Route path="/select-movie-normal">
             <SelectMovieNormal></SelectMovieNormal>
           </Route>
