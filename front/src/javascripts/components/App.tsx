@@ -47,13 +47,6 @@ const App = () => {
     return (
       <div>
         <CoordinateArea></CoordinateArea>
-        {/* <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => HandleFilterByFaceIconOkButtonClick()}
-        >
-          オッケー
-        </Button> */}
       </div>
     );
   };

@@ -109,7 +109,7 @@ const SelectMoviePropose = () => {
       return (
         <>
           <div className={classes.selectHelpfulHeader}>
-            <h3>参考になったと感じるレビューを選択してください。</h3>
+            <h2>参考になったと感じるレビューを選択してください。</h2>
           </div>
         </>
       );
@@ -171,9 +171,16 @@ const SelectMoviePropose = () => {
       {returnSelectHelpfulModeTemplete()}
       <div className={classes.content}>
         <div className={classes.left}>
-          <Typography variant="h5" gutterBottom component="div">
-            乗り遅れた旅人
-          </Typography>
+          <div className={classes.reviewHeader}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              style={{ fontWeight: "bold" }}
+            >
+              乗り遅れた旅人
+            </Typography>
+          </div>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
               if (
@@ -197,9 +204,16 @@ const SelectMoviePropose = () => {
         </div>
 
         <div className={classes.right}>
-          <Typography variant="h5" gutterBottom component="div">
-            シェイクスピア・イン・トーキョー
-          </Typography>
+          <div className={classes.reviewHeader}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              component="div"
+              style={{ fontWeight: "bold" }}
+            >
+              シェークスピア・イン・トーキョー
+            </Typography>
+          </div>
           <div className={classes.reviewList__under}>
             {reviews.map((review, index) => {
               if (
@@ -253,6 +267,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   right: {
+    borderLeft: "1px black solid",
     margin: "10px 10px 10px 10px",
     width: "40%",
   },
@@ -277,8 +292,16 @@ const useStyles = makeStyles((theme) => ({
   selectHelpfulHeader: {
     textAlign: "center",
     margin: "0 auto",
-    height: 50,
+    height: 30,
     marginTop: 20,
+  },
+  reviewHeader: {
+    backgroundColor: "white",
+    position: "sticky",
+    height: 60,
+    top: 0,
+    fontWeight: "bold",
+    paddingTop: 13,
   },
 }));
 

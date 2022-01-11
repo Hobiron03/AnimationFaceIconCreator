@@ -22,16 +22,6 @@ const FaceIconReivewModal = ({
 }) => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
-  // const [isHelpful, setIsHelpful] = useState(false);
-
-  useEffect(() => {
-    // state.helpfulReview.forEach((review) => {
-    //   if (isHelpful) {
-    //     setIsHelpful(true);
-    //   }
-    // });
-    console.log(staticFaceIcons);
-  }, []);
 
   const CloseReviewModal = () => {
     toggleModalState();
