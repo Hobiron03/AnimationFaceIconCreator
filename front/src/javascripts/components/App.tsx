@@ -27,6 +27,7 @@ const App = () => {
     filterFaceIcon: [],
     filterDTW: { timeSeriesDataX: [], timeSeriesDataY: [] },
     helpfulReview: [],
+    readReviewPropose: [],
     helpfulReviewPropose: [],
   };
   const [state, dispatch] = useReducer(reducer, initialState);

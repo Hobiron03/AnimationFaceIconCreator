@@ -76,12 +76,12 @@ const SelectThingsPropose = () => {
   const onReviewViewEndButton = async () => {
     const sendData: sendData = {
       name,
-      reviews: state.helpfulReviewPropose,
+      reviews: state.readReviewPropose,
       time: performance.now() - startTime,
     };
     const reviewsCollectionReference = firebase
       .firestore()
-      .collection("helpfulReviewPropose");
+      .collection("readReviewPropose");
     await reviewsCollectionReference.add(sendData);
     console.log(name);
   };
@@ -121,6 +121,7 @@ const SelectThingsPropose = () => {
                 return (
                   <div className={classes.reviewList__border} key={index}>
                     <FaceReviewCard
+                      isSelectHelpfulReviewMode={true}
                       animationFaceIcon={review.animationFaceIcon}
                       title={review.title}
                       reviews={review.reviews}
@@ -146,6 +147,7 @@ const SelectThingsPropose = () => {
                 return (
                   <div className={classes.reviewList__border} key={index}>
                     <FaceReviewCard
+                      isSelectHelpfulReviewMode={true}
                       animationFaceIcon={review.animationFaceIcon}
                       title={review.title}
                       reviews={review.reviews}

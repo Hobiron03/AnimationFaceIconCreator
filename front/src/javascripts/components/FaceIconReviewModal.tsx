@@ -8,6 +8,7 @@ import AppContext from "../contexts/AppContext";
 
 import { ListItem } from "@material-ui/core";
 import { List } from "@material-ui/core";
+import { ADD_HELPFUL_REVIEW_PROPOSE } from "../actions";
 
 const FaceIconReivewModal = ({
   toggleModalState,
@@ -17,6 +18,7 @@ const FaceIconReivewModal = ({
   reviews,
   isHelpful,
   setIsHelpful,
+  isSelectHelpfulReviewMode,
 }) => {
   const classes = useStyles();
   const { state, dispatch } = useContext(AppContext);
@@ -36,16 +38,38 @@ const FaceIconReivewModal = ({
   };
 
   const onHelpfulButtonClick = () => {
-    // dispatch({
-    //   type: ADD_HELPFUL_REVIEW,
-    //   review: {
-    //     title,
-    //     value,
-    //     content,
-    //   },
-    // });
+    console.log(reviews);
+    dispatch({
+      type: ADD_HELPFUL_REVIEW_PROPOSE,
+      reviews: {
+        title,
+        reviews,
+      },
+    });
 
     setIsHelpful(true);
+  };
+
+  const returnHelpfulButtonTSX = () => {
+    if (isSelectHelpfulReviewMode) {
+      return (
+        <div className={classes.paper__helpfulButton}>
+          {!isHelpful ? (
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={onHelpfulButtonClick}
+            >
+              役に立った
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary" disabled={true}>
+              Thank you
+            </Button>
+          )}
+        </div>
+      );
+    }
   };
 
   return (
@@ -80,21 +104,7 @@ const FaceIconReivewModal = ({
           })}
         </List>
 
-        <div className={classes.paper__helpfulButton}>
-          {!isHelpful ? (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={onHelpfulButtonClick}
-            >
-              役に立った
-            </Button>
-          ) : (
-            <Button variant="contained" color="primary" disabled={true}>
-              Thank you
-            </Button>
-          )}
-        </div>
+        {returnHelpfulButtonTSX()}
       </div>
     </Modal>
   );

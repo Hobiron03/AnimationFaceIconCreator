@@ -6,6 +6,7 @@ interface IProps {
     filterFaceIcon: any;
     filterDTW: any;
     helpfulReview: any;
+    readReviewPropose: any;
     helpfulReviewPropose: any;
   };
   dispatch: any;

@@ -6,8 +6,8 @@ import Rating from "@material-ui/lab/Rating";
 import FaceIconReviewModal from "./FaceIconReviewModal";
 import AppContext from "../contexts/AppContext";
 import {
-  ADD_HELPFUL_REVIEW_PROPOSE,
-  UPDATE_HELPFUL_REVIEW_PROPOSE,
+  ADD_READ_REVIEW_PROPOSE,
+  UPDATE_READ_REVIEW_PROPOSE,
 } from "../actions/";
 
 interface CardProps {
@@ -15,6 +15,7 @@ interface CardProps {
   title: string;
   reviews: Array<string>;
   staticFaceIcons: Array<string>;
+  isSelectHelpfulReviewMode: Boolean;
 }
 
 const FaceReviewCard = (props: CardProps) => {
@@ -30,6 +31,7 @@ const FaceReviewCard = (props: CardProps) => {
   const reviewContentModal = () => {
     return isReviewContentModalOpen ? (
       <FaceIconReviewModal
+        isSelectHelpfulReviewMode={props.isSelectHelpfulReviewMode}
         toggleModalState={toggleModalState}
         animationFaceIcon={props.animationFaceIcon}
         staticFaceIcons={props.staticFaceIcons}
@@ -46,7 +48,7 @@ const FaceReviewCard = (props: CardProps) => {
 
     if (viewTime === 0) {
       dispatch({
-        type: ADD_HELPFUL_REVIEW_PROPOSE,
+        type: ADD_READ_REVIEW_PROPOSE,
         review: {
           title: props.title,
           reviews: props.reviews,
@@ -58,7 +60,7 @@ const FaceReviewCard = (props: CardProps) => {
       console.log(isHelpful);
     } else {
       dispatch({
-        type: UPDATE_HELPFUL_REVIEW_PROPOSE,
+        type: UPDATE_READ_REVIEW_PROPOSE,
         review: {
           title: props.title,
           reviews: props.reviews,
@@ -66,11 +68,8 @@ const FaceReviewCard = (props: CardProps) => {
           readTime: viewTime + performance.now() - startTime,
         },
       });
-      console.log("UPDATE REVIEW");
-      console.log(isHelpful);
     }
 
-    console.log("state: ", state.helpfulReview);
     setViewTime(viewTime + performance.now() - startTime);
   };
 

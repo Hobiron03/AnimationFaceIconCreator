@@ -111,7 +111,7 @@ const SelectMovieNormal = () => {
             })}
           </div>
 
-          <Typography variant="h5" gutterBottom component="div">
+          {/* <Typography variant="h5" gutterBottom component="div">
             ミニ四駆
           </Typography>
           <div className={classes.reviewList__under}>
@@ -140,7 +140,7 @@ const SelectMovieNormal = () => {
                 }
               }
             })}
-          </div>
+          </div> */}
         </div>
 
         <div className={classes.right}>
@@ -175,7 +175,7 @@ const SelectMovieNormal = () => {
             })}
           </div>
 
-          <Typography variant="h5" gutterBottom component="div">
+          {/* <Typography variant="h5" gutterBottom component="div">
             スカイツリー
           </Typography>
           <div className={classes.reviewList__under}>
@@ -204,7 +204,7 @@ const SelectMovieNormal = () => {
                 }
               }
             })}
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={classes.okButton}>

@@ -1,6 +1,6 @@
 import {
   ADD_HELPFUL_REVIEW_PROPOSE,
-  UPDATE_HELPFUL_REVIEW_PROPOSE,
+  UPDATE_HELPFUL_REVIEW_PROPSE,
 } from "../actions/index";
 
 interface helpfulReview {
@@ -13,21 +13,13 @@ interface helpfulReview {
 
 interface helpfulReviewAction {
   type: string;
-  review: helpfulReview;
+  reviews: helpfulReview;
 }
 
 const helpfulReviewPropose = (state = [], action) => {
   switch (action.type) {
     case ADD_HELPFUL_REVIEW_PROPOSE:
-      return [...state, action.review];
-    case UPDATE_HELPFUL_REVIEW_PROPOSE:
-      const updateState = state.map((review) => {
-        if (action.review.title === review.title) {
-          return action.review;
-        }
-        return review;
-      });
-      return updateState;
+      return [...state, action.reviews];
     default:
       return state;
   }

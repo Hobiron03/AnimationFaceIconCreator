@@ -34,9 +34,11 @@ interface reviewData {
 
 const SelectMoviePropose = () => {
   const classes = useStyles();
-  const { state } = useContext(AppContext);
+  const { state, dispatch } = useContext(AppContext);
   const [name, setName] = useState("");
   const [searchRate, setSearchRate] = useState(null);
+  const [isSelectHelpfulReviewMode, setIsSelectHelpfulMode] = useState(false);
+
   const [reviews, setReviews] = useState([]);
   const [startTime, setStartTime] = useState(0);
 
@@ -64,8 +66,6 @@ const SelectMoviePropose = () => {
     let costX = dtw.compute(state.filterDTW.timeSeriesDataX, dataX);
     let costY = dtw.compute(state.filterDTW.timeSeriesDataY, dataY);
 
-    console.log(costX + costY);
-
     if (costX + costY <= 1000000) {
       return true;
     }
@@ -73,40 +73,102 @@ const SelectMoviePropose = () => {
     return false;
   };
 
-  const onReviewViewEndButton = async () => {
+  const handleReviewViewEndButtonClick = async () => {
     const sendData: sendData = {
       name,
-      reviews: state.helpfulReviewPropose,
+      reviews: state.readReviewPropose,
       time: performance.now() - startTime,
     };
     const reviewsCollectionReference = firebase
       .firestore()
-      .collection("helpfulReviewPropose");
+      .collection("readReviewPropose");
     await reviewsCollectionReference.add(sendData);
-    console.log(name);
+
+    setIsSelectHelpfulMode(true);
+  };
+
+  const handleSelectHelpfulReviewEndButtonClick = async () => {
+    console.log(state.helpfulReviewPropose);
+    const sendData: sendData = {
+      name,
+      reviews: state.helpfulReviewPropose,
+      time: 0,
+    };
+    const reviewsCollectionReference = firebase
+      .firestore()
+      .collection("helpfulReviews2");
+    await reviewsCollectionReference.add(sendData);
   };
 
   const handleChangeName = (e) => {
     setName(e.target.value);
   };
 
+  const returnSelectHelpfulModeTemplete = () => {
+    if (isSelectHelpfulReviewMode) {
+      return (
+        <>
+          <div className={classes.selectHelpfulHeader}>
+            <h3>参考になったと感じるレビューを選択してください。</h3>
+          </div>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <div className={classes.inputName}>
+            <h4>氏名</h4>
+            <input
+              className={classes.inputName__form}
+              type="text"
+              onChange={(e) => handleChangeName(e)}
+            />
+          </div>
+
+          <div className={classes.searchRate}>
+            <h3>顔アイコン検索</h3>
+            <CoordinateAreaInSearchPage></CoordinateAreaInSearchPage>
+          </div>
+        </>
+      );
+    }
+  };
+
+  const returnReadButtonTSX = () => {
+    if (isSelectHelpfulReviewMode) {
+      return (
+        <div className={classes.okButton}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSelectHelpfulReviewEndButtonClick}
+          >
+            <Typography variant="h6" gutterBottom>
+              これで終わる
+            </Typography>
+          </Button>
+        </div>
+      );
+    } else {
+      return (
+        <div className={classes.okButton}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleReviewViewEndButtonClick}
+          >
+            <Typography variant="h6" gutterBottom>
+              レビューを読み終える
+            </Typography>
+          </Button>
+        </div>
+      );
+    }
+  };
+
   return (
-    <div>
-      <div className={classes.inputName}>
-        <h4>氏名</h4>
-        <input
-          className={classes.inputName__form}
-          type="text"
-          onChange={(e) => handleChangeName(e)}
-        />
-      </div>
-
-      <div className={classes.searchRate}>
-        <h3>顔アイコン検索</h3>
-        <CoordinateAreaInSearchPage></CoordinateAreaInSearchPage>
-        {/* store のtimeSeriesDataX、Y に奇跡のデータが入っているからそれと比較して出す */}
-      </div>
-
+    <>
+      {returnSelectHelpfulModeTemplete()}
       <div className={classes.content}>
         <div className={classes.left}>
           <Typography variant="h5" gutterBottom component="div">
@@ -121,6 +183,7 @@ const SelectMoviePropose = () => {
                 return (
                   <div className={classes.reviewList__border} key={index}>
                     <FaceReviewCard
+                      isSelectHelpfulReviewMode={isSelectHelpfulReviewMode}
                       animationFaceIcon={review.animationFaceIcon}
                       title={review.title}
                       reviews={review.reviews}
@@ -131,29 +194,6 @@ const SelectMoviePropose = () => {
               }
             })}
           </div>
-
-          {/* <Typography variant="h5" gutterBottom component="div">
-            ミニ四駆
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (
-                review.objectName === "mini" &&
-                isSimilarTrajectory(review.dataX, review.dataY)
-              ) {
-                return (
-                  <div className={classes.reviewList__border} key={index}>
-                    <FaceReviewCard
-                      animationFaceIcon={review.animationFaceIcon}
-                      title={review.title}
-                      reviews={review.reviews}
-                      staticFaceIcons={review.staticFaceIcon}
-                    ></FaceReviewCard>
-                  </div>
-                );
-              }
-            })}
-          </div> */}
         </div>
 
         <div className={classes.right}>
@@ -169,6 +209,7 @@ const SelectMoviePropose = () => {
                 return (
                   <div className={classes.reviewList__border} key={index}>
                     <FaceReviewCard
+                      isSelectHelpfulReviewMode={isSelectHelpfulReviewMode}
                       animationFaceIcon={review.animationFaceIcon}
                       title={review.title}
                       reviews={review.reviews}
@@ -179,43 +220,11 @@ const SelectMoviePropose = () => {
               }
             })}
           </div>
-
-          {/* <Typography variant="h5" gutterBottom component="div">
-            スカイツリー
-          </Typography>
-          <div className={classes.reviewList__under}>
-            {reviews.map((review, index) => {
-              if (
-                review.objectName === "skytree" &&
-                isSimilarTrajectory(review.dataX, review.dataY)
-              ) {
-                return (
-                  <div className={classes.reviewList__border} key={index}>
-                    <FaceReviewCard
-                      animationFaceIcon={review.animationFaceIcon}
-                      title={review.title}
-                      reviews={review.reviews}
-                      staticFaceIcons={review.staticFaceIcon}
-                    ></FaceReviewCard>
-                  </div>
-                );
-              }
-            })}
-          </div> */}
         </div>
       </div>
-      <div className={classes.okButton}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={onReviewViewEndButton}
-        >
-          <Typography variant="h6" gutterBottom>
-            レビューを読み終える
-          </Typography>
-        </Button>
-      </div>
-    </div>
+
+      {returnReadButtonTSX()}
+    </>
   );
 };
 
@@ -264,6 +273,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     margin: "0 auto",
     height: 350,
+  },
+  selectHelpfulHeader: {
+    textAlign: "center",
+    margin: "0 auto",
+    height: 50,
+    marginTop: 20,
   },
 }));
 
