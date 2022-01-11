@@ -85,6 +85,7 @@ const FaceIconReivewModal = ({
                     src={staticFaceIcons[index]}
                     alt=""
                     width="80"
+                    height="80"
                     className={classes.paper__review__img}
                   />
                   <p>{review}</p>
@@ -102,7 +103,7 @@ const FaceIconReivewModal = ({
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    width: 800,
+    width: 900,
     margin: "70px auto",
     borderRadius: 10,
     backgroundColor: theme.palette.background.paper,
@@ -113,6 +114,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper__review: {
     display: "flex",
+    alignItems: "center",
   },
   paper__review__img: {
     marginRight: 20,
