@@ -4,12 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../../../Firebase";
 import Typography from "@material-ui/core/Typography";
 import AppContext from "../contexts/AppContext";
+import { FILTER_BY_DTW } from "../actions";
 
 import Button from "@material-ui/core/Button";
 import FaceReviewCard from "./FaceReviewCard";
-
 import CoordinateAreaInSearchPage from "./CoordinateAreaInSearchPage";
-
+import SelectMovieModal from "./SelectMovieModal";
 import DTW from "dtw";
 
 interface sendData {
@@ -38,6 +38,8 @@ const SelectMoviePropose = () => {
   const [name, setName] = useState("");
   const [searchRate, setSearchRate] = useState(null);
   const [isSelectHelpfulReviewMode, setIsSelectHelpfulMode] = useState(false);
+  const [isSelectMovieModalOpen, setIsSelectMovieModalOpen] = useState(false);
+  const [isExperimentEnd, setIsExperimtneEnd] = useState(false);
 
   const [reviews, setReviews] = useState([]);
   const [startTime, setStartTime] = useState(0);
@@ -73,6 +75,20 @@ const SelectMoviePropose = () => {
     return false;
   };
 
+  const handleSelectMovieModalOpen = () => {
+    // toggleModalState();
+    // setIsModalOpen(false);
+    setIsSelectMovieModalOpen(true);
+  };
+
+  const handleSelectMovieModalClose = () => {
+    setIsSelectMovieModalOpen(false);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   const handleReviewViewEndButtonClick = async () => {
     const sendData: sendData = {
       name,
@@ -85,6 +101,7 @@ const SelectMoviePropose = () => {
     await reviewsCollectionReference.add(sendData);
 
     setIsSelectHelpfulMode(true);
+    handleSelectMovieModalOpen();
   };
 
   const handleSelectHelpfulReviewEndButtonClick = async () => {
@@ -98,10 +115,19 @@ const SelectMoviePropose = () => {
       .firestore()
       .collection("helpfulReviews2");
     await reviewsCollectionReference.add(sendData);
+
+    setIsExperimtneEnd(true);
   };
 
   const handleChangeName = (e) => {
     setName(e.target.value);
+  };
+
+  const handleResetButtonClick = () => {
+    dispatch({
+      type: FILTER_BY_DTW,
+      timeSeriesData: { timeSeriesDataX: [], timeSeriesDataY: [] },
+    });
   };
 
   const returnSelectHelpfulModeTemplete = () => {
@@ -126,7 +152,16 @@ const SelectMoviePropose = () => {
           </div>
 
           <div className={classes.searchRate}>
-            <h3>顔アイコン検索</h3>
+            <div className={classes.searchRate__header}>
+              <h3>顔アイコン検索</h3>
+              <Button
+                variant="contained"
+                onClick={handleResetButtonClick}
+                className={classes.searchRate__header__resetButton}
+              >
+                リセット
+              </Button>
+            </div>
             <CoordinateAreaInSearchPage></CoordinateAreaInSearchPage>
           </div>
         </>
@@ -166,8 +201,24 @@ const SelectMoviePropose = () => {
     }
   };
 
-  return (
+  return isExperimentEnd ? (
     <>
+      <div className={classes.thanks}>
+        <Typography variant="h4" gutterBottom>
+          ありがとうございました。
+        </Typography>
+        <Typography variant="h5" gutterBottom>
+          これで実験は終了です。
+        </Typography>
+      </div>
+    </>
+  ) : (
+    <>
+      <SelectMovieModal
+        isSelectMovieModalOpen={isSelectMovieModalOpen}
+        handleSelectMovieModalClose={handleSelectMovieModalClose}
+        handleSelectMovieModalOpen={handleSelectMovieModalOpen}
+      ></SelectMovieModal>
       {returnSelectHelpfulModeTemplete()}
       <div className={classes.content}>
         <div className={classes.left}>
@@ -243,6 +294,10 @@ const SelectMoviePropose = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  thanks: {
+    marginTop: 100,
+    textAlign: "center",
+  },
   reviewList: {
     width: "30%",
     display: "flex",
@@ -288,6 +343,15 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     margin: "0 auto",
     height: 350,
+  },
+  searchRate__header: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchRate__header__resetButton: {
+    marginLeft: 20,
+    height: 40,
   },
   selectHelpfulHeader: {
     textAlign: "center",
