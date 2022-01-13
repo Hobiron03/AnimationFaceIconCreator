@@ -100,6 +100,7 @@ const SelectMoviePropose = () => {
       .collection("readReviewPropose");
     await reviewsCollectionReference.add(sendData);
 
+    handleResetButtonClick();
     setIsSelectHelpfulMode(true);
     handleSelectMovieModalOpen();
   };

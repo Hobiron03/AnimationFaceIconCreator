@@ -56,7 +56,7 @@ const FaceIconReivewModal = ({
     >
       <div className={classes.paper}>
         <div className={classes.paper__title}>
-          <h3>レビューを拝読ありがとうございました。</h3>
+          <h3>どちらの動画を見たいか選択してください</h3>
         </div>
 
         <div className={classes.paper__content}>
@@ -66,9 +66,9 @@ const FaceIconReivewModal = ({
             component="fieldset"
             className={classes.formControl}
           >
-            <FormLabel component="legend">
+            {/* <FormLabel component="legend">
               どちらの動画を見たいか選択してください。
-            </FormLabel>
+            </FormLabel> */}
             <FormGroup>
               <FormControlLabel
                 control={
