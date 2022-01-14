@@ -54,16 +54,20 @@ const SelectMovieNormal = () => {
     setName(e.target.value);
   };
 
+  const handleResetButtonClick = () => {
+    setSearchRate(null);
+  };
+
   return (
     <div>
-      <div className={classes.inputName}>
+      {/* <div className={classes.inputName}>
         <h4>氏名</h4>
         <input
           className={classes.inputName__form}
           type="text"
           onChange={(e) => handleChangeName(e)}
         />
-      </div>
+      </div> */}
 
       <div className={classes.searchRate}>
         <h3>検索</h3>
@@ -76,6 +80,13 @@ const SelectMovieNormal = () => {
             setSearchRate(newValue);
           }}
         />
+        <Button
+          variant="contained"
+          onClick={handleResetButtonClick}
+          className={classes.searchRate__header__resetButton}
+        >
+          リセット
+        </Button>
       </div>
 
       <div className={classes.content}>
@@ -207,7 +218,7 @@ const SelectMovieNormal = () => {
           </div> */}
         </div>
       </div>
-      <div className={classes.okButton}>
+      {/* <div className={classes.okButton}>
         <Button
           variant="contained"
           color="secondary"
@@ -217,7 +228,7 @@ const SelectMovieNormal = () => {
             レビューを読み終える
           </Typography>
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -267,6 +278,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     margin: "0 auto",
     height: 50,
+  },
+  searchRate__header__resetButton: {
+    marginLeft: 20,
+    marginBottom: 20,
+    height: 30,
   },
 }));
 
