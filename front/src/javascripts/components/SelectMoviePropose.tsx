@@ -102,7 +102,9 @@ const SelectMoviePropose = () => {
 
     handleResetButtonClick();
     setIsSelectHelpfulMode(true);
-    handleSelectMovieModalOpen();
+    // handleSelectMovieModalOpen();
+    const url = `https://docs.google.com/forms/d/1VNTzDaoRHcTHD3FCNcpcFIY12d9HixKAJFG1kDQHBbo/edit?https://docs.google.com/forms/d/e/1FAIpQLScqODauUUCizQ8FbCfHfM9v8Cj7jbn9pTZ_hs-S7rp-eTW1_Q/viewform?usp=pp_url&entry.636376960=${name}`;
+    window.open(url, "_blank");
   };
 
   const handleSelectHelpfulReviewEndButtonClick = async () => {
