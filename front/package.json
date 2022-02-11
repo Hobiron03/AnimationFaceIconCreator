@@ -27,7 +27,7 @@
     "html-webpack-plugin": "^4.5.0",
     "html2canvas": "^1.0.0-rc.7",
     "mini-css-extract-plugin": "^1.0.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "postcss": "^7.0.36",
     "postcss-cli": "^8.3.1",
     "sass-loader": "^10.0.3",
