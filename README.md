@@ -1,5 +1,5 @@
 ## AnimationFaceIconCreator
-平面をなぞるだけで表情を変化させられる顔アイコンを作れます。
+平面をなぞるだけで簡単に表情が変化する顔アイコンを作れます。
 
 <img width="300" alt="スクリーンショット 2022-08-29 21 02 08" src="https://user-images.githubusercontent.com/19424097/187196877-7a962ff1-1a72-423d-a316-74c050d52275.png">
 
