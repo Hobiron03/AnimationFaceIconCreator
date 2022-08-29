@@ -6,7 +6,7 @@
 ![AnimationFaceIcon](https://storage.googleapis.com/faceicons/face-2cfec043dd6236d0a5842f7f4cdaa4fcaefbd7f26ebc8c2a3469fe50.gif)
 
 ## 発表
-[第194回 HCI　研究会「Face AVAS：時系列を伴う感情の表現が可能な顔アイコン作成システムの提案」](https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=212294&item_no=1)
+[第194回HCI研究会「Face AVAS：時系列を伴う感情の表現が可能な顔アイコン作成システムの提案」](https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=212294&item_no=1)
 
 ## Frontend
 - React
