@@ -1,9 +1,12 @@
-# AnimationFaceIconCreator
+## AnimationFaceIconCreator
 平面をなぞるだけで表情を変化させられる顔アイコンを作れます。
 
 <img width="300" alt="スクリーンショット 2022-08-29 21 02 08" src="https://user-images.githubusercontent.com/19424097/187196877-7a962ff1-1a72-423d-a316-74c050d52275.png">
 
 ![AnimationFaceIcon](https://storage.googleapis.com/faceicons/face-2cfec043dd6236d0a5842f7f4cdaa4fcaefbd7f26ebc8c2a3469fe50.gif)
+
+## 発表
+[第194回 HCI　研究会「Face AVAS：時系列を伴う感情の表現が可能な顔アイコン作成システムの提案」](https://ipsj.ixsq.nii.ac.jp/ej/index.php?active_action=repository_view_main_item_detail&page_id=13&block_id=8&item_id=212294&item_no=1)
 
 ## Frontend
 - React
